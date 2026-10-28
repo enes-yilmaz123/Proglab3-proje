@@ -1,7 +1,19 @@
+using Microsoft.EntityFrameworkCore; // ef core kütüphanesini ekler
+using StajYonetimSistemi.Data; // data base ile bağlantıyı sağlıyan köprüyü kullanmamızı sağlar
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+//ne zamana data base ye birşey kaydedilecek olursa bizim yazdığımız ayarları uygulamasını sağlıyan kod 
+//projeyi çalıştırdığımda ana klasörün içine staj.db adında bir dosya oluştur ve bütün tabloları o dosyanın içine yaz demek oluyor
+builder.Services.AddDbContext<StajDbContext>(options => options.UseSqlite("Data Source=staj.db"));
+//                                                  sql lite kullanacağımızı bildiriyoruz
+
+
 
 var app = builder.Build();
 
