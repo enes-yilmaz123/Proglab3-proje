@@ -1,0 +1,36 @@
+@model List<StajYonetimSistemi.Models.Student>
+
+<h2>Öğrenci Listesi (Backend Test Ekranı)</h2>
+
+<table border="1" cellpadding="10">
+    <thead>
+        <tr>
+            <th>Öğrenci No</th>
+            <th>Ad</th>
+            <th>Soyad</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Eğer veri tabanından gelen liste boş değilse (içinde öğrenci varsa) döngüye gir -->
+        @if (Model != null && Model.Any())
+        {
+            foreach (var ogrenci in Model)
+            {
+                <tr>
+                    <td>@ogrenci.StudentNumber</td>
+                    <td>@ogrenci.FirstName</td>
+                    <td>@ogrenci.LastName</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <!-- Liste boşsa (veri tabanında henüz kayıt yoksa) bu mesajı göster -->
+            <tr>
+                <td colspan="3" style="text-align: center; color: red;">
+                    Henüz veri tabanında kayıtlı öğrenci yok. (Ama veri tabanı bağlantısı başarılı!)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
