@@ -5,7 +5,7 @@
 
 namespace StajYonetimSistemi.Models
 {
-    public class User
+    public abstract class User // direkt olarak bu sınıftan new nesne oluşturulamamsı için abstract eklendi 
         {
             public int id { get; init; }
             public string Email { get; set; }
