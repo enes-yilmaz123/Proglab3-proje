@@ -10,5 +10,7 @@ namespace StajYonetimSistemi.Models
             public int id { get; init; }
             public string Email { get; set; }
             public string Password { get; set; }
+            public int FailAttempts { get; set; } = 0; // üst üste yanlış şifre sayısı
+            public bool IsLocked { get; set; } = false; // kilit kontrolü
         }
 }
