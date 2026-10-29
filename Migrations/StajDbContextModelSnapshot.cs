@@ -7,7 +7,7 @@ using StajYonetimSistemi.Data;
 
 #nullable disable
 
-namespace proglab3_projee.Migrations
+namespace StajYonetimSistemi.Migrations
 {
     [DbContext(typeof(StajDbContext))]
     partial class StajDbContextModelSnapshot : ModelSnapshot

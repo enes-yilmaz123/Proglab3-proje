@@ -8,7 +8,7 @@ using StajYonetimSistemi.Data;
 
 #nullable disable
 
-namespace proglab3_projee.Migrations
+namespace StajYonetimSistemi.Migrations
 {
     [DbContext(typeof(StajDbContext))]
     [Migration("20261028123214_InitialCreate")]
