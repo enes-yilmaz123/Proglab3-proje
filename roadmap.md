@@ -6,4 +6,5 @@
 4. veri tabanı olarak sqlite seçildi ve bu database bağlantısı için gerekli kodlar pragram.cs e eklendi 
 5. initial create migrationı ile veri tabanı taslağı oluşturuldu
 6. students için controller oluşturuldu 
+7. durum kondrolu için models klasörüne bir DocumentStatus eklendi ennum yapısı ile ve migration alındı
 
