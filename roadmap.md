@@ -22,3 +22,4 @@
 4. doğrulama sonucunu taşımak için Sonuc sınıfı yazıldı
 5. kimlik kuralları için KimlikDogrulayici soyut sınıfı yazıldı 11 hane ve sadece rakam kontrolü burada ortak tutuldu
 6. tc kimlik ve yabancı kimlik doğrulayıcıları KimlikDogrulayici sınıfından türetildi
+7. telefon doğrulayıcı kuralı yazıldı regex ile +90 xxx xxx xx xx formatı kontrol edildi Kural sınıfından türetildi
