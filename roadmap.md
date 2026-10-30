@@ -20,3 +20,5 @@
 2. kuralları önce repo dışında bir deneme konsol projesinde yazıp test ettim, sonra projeye taşıyorum
 3. validation klasörü oluşturuldu, tüm kuralların ortak ana sınıfı olan soyut Kural sınıfı yazıldı 
 4. doğrulama sonucunu taşımak için Sonuc sınıfı yazıldı
+5. kimlik kuralları için KimlikDogrulayici soyut sınıfı yazıldı 11 hane ve sadece rakam kontrolü burada ortak tutuldu
+6. tc kimlik ve yabancı kimlik doğrulayıcıları KimlikDogrulayici sınıfından türetildi
