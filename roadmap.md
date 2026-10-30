@@ -13,3 +13,4 @@
 11. auth kontrol mekanizmaları program.cs e eklendi 
 12. form verilerinin diğer entityler le karışmaması için view models klasörü oluşturuldu 
 13. klasörün içine login sayfasındaki form verilerinin dönmesi için bir loginviewmodels dosyası eklendi
+14. authcontroller iskeleti ve sayfayı fırlatan get metodu yazıldı 
