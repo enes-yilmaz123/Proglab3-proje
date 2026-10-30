@@ -20,6 +20,6 @@ public class TcKimlikDogrulayici : KimlikDogrulayici
             return new Sonuc(false, "ilk hane 0 olamaz");
         }
 
-        return new Sonuc(true, "Geçerli");
+        return new Sonuc(true, "Gecerli");
     }
 }

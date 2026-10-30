@@ -15,6 +15,6 @@ public class TelefonDogrulayici : Kural
             return new Sonuc(false, "telefon +90 xxx xxx xx xx formatinda olmali");
         }
 
-        return new Sonuc(true, "Geçerli");
+        return new Sonuc(true, "Gecerli");
     }
 }
