@@ -37,6 +37,27 @@ namespace StajYonetimSistemi.Migrations
                     b.ToTable("Documents");
                 });
 
+            modelBuilder.Entity("StajYonetimSistemi.Models.LoginLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("AttemptTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsSuccess")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LoginLogs");
+                });
+
             modelBuilder.Entity("StajYonetimSistemi.Models.User", b =>
                 {
                     b.Property<int>("id")
