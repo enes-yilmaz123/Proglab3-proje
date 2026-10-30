@@ -7,4 +7,6 @@
 5. initial create migrationı ile veri tabanı taslağı oluşturuldu
 6. students için controller oluşturuldu 
 7. durum kondrolu için models klasörüne bir DocumentStatus eklendi ennum yapısı ile ve migration alındı
-8. şifre servisi oluşturludu SHA256 servisi kullanıldı 
+8. şifre servisi oluşturludu SHA256 servisi kullanıldı (256 bit uzunluğunda bir veriye dönüştürür)
+9. spam koruması için kilit eklendi 
+10. giriş denemelerini tutacak olan loginlog modeli eklendi 
