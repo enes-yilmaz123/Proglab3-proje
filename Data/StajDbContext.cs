@@ -10,6 +10,7 @@ namespace StajYonetimSistemi.Data
         public DbSet<Student> Students { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Document> Documents { get; set; }
+        public DbSet<LoginLog> LoginLogs { get; set; }
 
         // bu sınıftan bir nesne oluşturulduğunda ilk çalışıcak olan yapıcı metod 
         // bizim yazdığımız ayarları miraas aldığı classa yani DbContext e taşıyacak 
