@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore; // ef core kütüphanesini ekler
 using StajYonetimSistemi.Data; // data base ile bağlantıyı sağlıyan köprüyü kullanmamızı sağlar
 
+using Microsoft.AspNetCore.Authentication.Cookies;
+//bir kullanıcının giriş bilgilerini karşılaşitırdıktan sonra eğerki doğru ise sunucu tarafından bir cookie göndeririz
+//içinde eposta gibi bilgiler bulunur sunucu her istekde cookie ye bakar kullanıcıdan sürekli giriş verisi istemez çıkış yapana kadar saklanır
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +18,8 @@ builder.Services.AddDbContext<StajDbContext>(options => options.UseSqlite("Data 
 //                                                  sql lite kullanacağımızı bildiriyoruz
 
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => { options.LoginPath = "/Auth/Login";});
+// admin sayfası yada öğrencilerin evrak yükleme sayfası gibi korumalı sayfalara girince buraya yönlendirilir
 
 var app = builder.Build();
 
@@ -28,7 +34,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthorization(); // bu fonksiyon kim oluğunu öğrenir
+
+app.UseAuthentication(); //cookie yi inceler ve bu kim olduğuna göre yetkisi olup olmadığına karar verir
 
 app.MapStaticAssets();
 
