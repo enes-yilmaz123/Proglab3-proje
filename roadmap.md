@@ -10,3 +10,6 @@
 8. şifre servisi oluşturludu SHA256 servisi kullanıldı (256 bit uzunluğunda bir veriye dönüştürür)
 9. spam koruması için kilit eklendi 
 10. giriş denemelerini tutacak olan loginlog modeli eklendi 
+11. auth kontrol mekanizmaları program.cs e eklendi 
+12. form verilerinin diğer entityler le karışmaması için view models klasörü oluşturuldu 
+13. klasörün içine login sayfasındaki form verilerinin dönmesi için bir loginviewmodels dosyası eklendi
