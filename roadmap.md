@@ -25,3 +25,6 @@
 7. telefon doğrulayıcı kuralı yazıldı regex ile +90 xxx xxx xx xx formatı kontrol edildi Kural sınıfından türetildi
 8. e-posta doğrulayıcı yazıldı, @ işaretinin tek olması, öncesinde karakter bulunması, noktanın @ dan sonra gelmesi, noktanın sonda bulunmaması ve nokta ile @ arasında karakter olması kontrol ediliyor. Kural sınıfından türetildi
 9. sonuç sınıfına uyarı bilgisi eklendi, mühendis sayısı doğrulayıcı yazıldı 
+10. dosya formatı kuralı yazıldı doc docx pdf jpg jpeg ve png uzantıları kabul ediliyor diğerleri reddediliyor 
+11. şu anda başta ve sondaki boşluklar silinmiyor bu işlem en son kuralları çağıran katmanda tek yerde yapılacak
+12. edestek forumundaki cevaba göre vizede evrak yükleme kontrolleri sadece dosya formatı ve uzantı kontrolünü kapsıyor, bu yüzden adres, öğretim yılı, teslim tarihi ve staj günü gibi diğer doğrulama kurallarına vizeden sonra devam edilecek
