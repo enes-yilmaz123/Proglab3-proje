@@ -3,8 +3,10 @@ using StajYonetimSistemi.Data;  //context oluşturmak için ef core
 using StajYonetimSistemi.Services;     // hashlemek için 
 using StajYonetimSistemi.ViewModels;  
 using StajYonetimSistemi.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Runtime.CompilerServices;
+
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 //bu sayfa kullanıcının girdiği bilgileri data basedekilerle karşılaştırıcak olan controller için 
 
@@ -31,8 +33,10 @@ namespace StajYonetimSistemi.Controllers
 
 
         [HttpPost] // form gönderilince çalışıcak metod
-        public IActionResult Login(LoginViewModel formInfo) // burayı form verilerini ASP.net core dolduruyor ve değişkenin içine atıyor bizde onları erkana veriyorz
-        {
+        public async Task<IActionResult> Login(LoginViewModel formInfo)// burayı form verilerini ASP.net core dolduruyor ve değişkenin içine atıyor bizde onları erkana veriyorz
+        {            
+            //cookie kullanabilmek için fonksiyonumuzu async olarak değiştiriyoruz çünkü kütüphaneden gelen bir zorunluluk bize bitmemiş bir iş döndürüyor
+
             // kullanıcı formu eksik yada hatalı doldurursa tekrar göndericke fonksiyon 
             // ModelState formdan alan bilgileri doğrulama durumu oluyor Isvalid de aralarından biri false ise false döndürüyor 
             // hata mesajınıda ModelState ye atar 
@@ -76,7 +80,33 @@ namespace StajYonetimSistemi.Controllers
                 return View(formInfo);// tekar hatalı şifre ve e posta ile tekrar formu gönderiyoruz
             }
             
-            return View(formInfo); // geçici olarak yazıldı return atmadan uyarı veriyor 
+            // buradan sonra sadece başarılı olduğu durum kalıyor 
+            user.FailAttempts = 0;
+            _context.LoginLogs.Add(new LoginLog { Email = formInfo.Email , IsSuccess = true});
+            _context.SaveChanges();
+
+            string rol; // rol için değişken oluşturuyoruz ki cookie ye atabilelim
+            if(user is Admin)
+                {rol = "ADMIN_ROLU";}
+            else 
+                {rol = "OGRENCI_ROLU";}
+
+
+            var claims = new List<Claim>   // cookie ye yazılacak bilgileri atıyoruz
+            {
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Role, rol)
+            };
+
+            var kimlik = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            //yukarıdaki kimlik bilgilerini tek bir nesneye atar
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(kimlik));
+            //cookie yi oluşturuyoruz async kullanmamızın sebebi burada await kullanmak zorunda olduğumuz için işlemi bitirmeden devam edilebilmesini sağlıyor
+            //bu satır çalışınca tarayıcıya bir cookie gider ve her istekte tekrar tekerar o gönderilir
+
+            return RedirectToAction("Index", "Home"); 
+            // giriş yapılınca ana sayfaya gönder
         }
 
     }
