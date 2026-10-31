@@ -14,3 +14,4 @@
 12. form verilerinin diğer entityler le karışmaması için view models klasörü oluşturuldu 
 13. klasörün içine login sayfasındaki form verilerinin dönmesi için bir loginviewmodels dosyası eklendi
 14. authcontroller iskeleti ve sayfayı fırlatan get metodu yazıldı 
+15. authcontroller içine post metodlarını çalıştıran fonksiyonlar yazıldı 

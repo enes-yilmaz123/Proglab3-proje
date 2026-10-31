@@ -61,6 +61,20 @@ namespace StajYonetimSistemi.Controllers
                 ModelState.AddModelError("", "Hesabınız kilitlendi yönetici ile iletişime geçin!!"); //error mesajı fırlatır
                 return View(formInfo);
             }
+            bool sifreDogruMu = _passwordService.Verify(user.Password , formInfo.Password);
+            if (!sifreDogruMu)
+            {
+                user.FailAttempts ++; //deneme başarısız olursa sayacı arttır 5 e ulaşırsa da kilitle 
+                if(user.FailAttempts >= 5)
+                {
+                    user.IsLocked = true;
+                }
+                _context.LoginLogs.Add(new LoginLog {Email = formInfo.Email , IsSuccess = false}); // log oluşturur
+                _context.SaveChanges();
+
+                ModelState.AddModelError("", "E-posta veya şifre hatalı"); // hata fırlat
+                return View(formInfo);// tekar hatalı şifre ve e posta ile tekrar formu gönderiyoruz
+            }
             
             return View(formInfo); // geçici olarak yazıldı return atmadan uyarı veriyor 
         }
