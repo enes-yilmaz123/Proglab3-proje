@@ -3,7 +3,7 @@ using StajYonetimSistemi.Data;  //context oluşturmak için ef core
 using StajYonetimSistemi.Services;     // hashlemek için 
 using StajYonetimSistemi.ViewModels;  
 using StajYonetimSistemi.Models;
-
+using Microsoft.AspNetCore.Authorization;// yetkilendirme ile alakalı
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -87,9 +87,9 @@ namespace StajYonetimSistemi.Controllers
 
             string rol; // rol için değişken oluşturuyoruz ki cookie ye atabilelim
             if(user is Admin)
-                {rol = "ADMIN_ROLU";}
+                {rol = "ROLE_ADMIN";}
             else 
-                {rol = "OGRENCI_ROLU";}
+                {rol = "ROLE_STUDENT";}
 
 
             var claims = new List<Claim>   // cookie ye yazılacak bilgileri atıyoruz
@@ -108,11 +108,17 @@ namespace StajYonetimSistemi.Controllers
             return RedirectToAction("Index", "Home"); 
             // giriş yapılınca ana sayfaya gönder
         }
+        [Authorize]//giriş yapmamış kullanıcıların logout metodunu çalıştırmaması lazım
         [HttpPost]// çıkış yapılınca cookie yi göndermeyi bırakır
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); // az önce kullandığımız fonksiyonun out versiyonu
             return RedirectToAction("Login"); // tekrardan giriş sayfasına yönlendiriyoruz
+        }
+        public IActionResult AccessDenied() // erişim reddeildi  sayfası 
+        {
+            return StatusCode(403, "Bu sayfaya erişim yetkiniz yok");
+            //front end tasarımında sayfa eklenicek buraya return view() ile 
         }
  
     }
