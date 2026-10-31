@@ -120,6 +120,42 @@ namespace StajYonetimSistemi.Controllers
             return StatusCode(403, "Bu sayfaya erişim yetkiniz yok");
             //front end tasarımında sayfa eklenicek buraya return view() ile 
         }
- 
+
+        [HttpGet] // kayıt ekranını fırlatan fonksiyon 
+        public IActionResult Register()
+        {
+            return View(new RegisterViewModel());
+        }
+
+        [HttpPost] // ekranında bilgileri alan fonksiyon
+        public IActionResult Register(RegisterViewModel formInfo)
+        {
+            if (!ModelState.IsValid) //boşsa formu  tekrar gönder
+            {
+                return View(formInfo);
+            }
+
+            // aynı e-posta ile kayıt var mı
+            bool emailVarMi = _context.Users.Any(u => u.Email == formInfo.Email);
+            if (emailVarMi) // eğerki data base de aynı epostadan başka varsa hatalı formu tekrar gönderir ve hata mesajı fırlatır
+            {
+                ModelState.AddModelError("", "Bu e-posta ile zaten bir hesap var");
+                return View(formInfo);
+            }
+
+            var student = new Student  //data baseye göndermek için controller içine atıyoruz bunun içinde önce boş bir nesne oluşturuyoruz
+            {
+                FirstName = formInfo.FirstName,
+                LastName = formInfo.LastName,
+                StudentNumber = formInfo.StudentNumber,
+                Email = formInfo.Email,
+                Password = _passwordService.Hash(formInfo.Password) // şifreyi direkt yüklemek yerine  hasleyip gönderiyoruz
+            };
+
+            _context.Students.Add(student); /// buda databaseye eklemesi için controllıra verdiğimiz kod sonrada yenileyip data baseye kaydediyoruz
+            _context.SaveChanges();
+
+            return RedirectToAction("Login"); // başarılı registerdan sonra /Auth/Login adresine yönlendirir
+        }
     }
 }
