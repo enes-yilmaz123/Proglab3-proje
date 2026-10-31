@@ -15,3 +15,5 @@
 13. klasörün içine login sayfasındaki form verilerinin dönmesi için bir loginviewmodels dosyası eklendi
 14. authcontroller iskeleti ve sayfayı fırlatan get metodu yazıldı 
 15. authcontroller içine post metodlarını çalıştıran fonksiyonlar yazıldı (login ve log out)
+16. controller metodlarında yetkilendirme eklendi 
+17. register sayfası için view model sınıfı oluşturuldu ve gereken bilgiler için form açıldı 
