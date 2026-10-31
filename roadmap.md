@@ -13,6 +13,10 @@
 11. auth kontrol mekanizmaları program.cs e eklendi 
 12. form verilerinin diğer entityler le karışmaması için view models klasörü oluşturuldu 
 13. klasörün içine login sayfasındaki form verilerinin dönmesi için bir loginviewmodels dosyası eklendi
+14. authcontroller iskeleti ve sayfayı fırlatan get metodu yazıldı 
+15. authcontroller içine post metodlarını çalıştıran fonksiyonlar yazıldı (login ve log out)
+16. controller metodlarında yetkilendirme eklendi 
+17. register sayfası için view model sınıfı oluşturuldu ve gereken bilgiler için form açıldı
 
 **Öğrenci 2 (evrak doğrulama) HARUN BOZKURT**
 
@@ -28,3 +32,4 @@
 10. dosya formatı kuralı yazıldı doc docx pdf jpg jpeg ve png uzantıları kabul ediliyor diğerleri reddediliyor 
 11. şu anda başta ve sondaki boşluklar silinmiyor bu işlem en son kuralları çağıran katmanda tek yerde yapılacak
 12. edestek forumundaki cevaba göre vizede evrak yükleme kontrolleri sadece dosya formatı ve uzantı kontrolünü kapsıyor, bu yüzden adres, öğretim yılı, teslim tarihi ve staj günü gibi diğer doğrulama kurallarına vizeden sonra devam edilecek
+ 

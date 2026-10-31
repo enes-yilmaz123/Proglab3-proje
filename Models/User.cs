@@ -8,8 +8,8 @@ namespace StajYonetimSistemi.Models
     public abstract class User // direkt olarak bu sınıftan new nesne oluşturulamamsı için abstract eklendi 
         {
             public int id { get; init; }
-            public string Email { get; set; }
-            public string Password { get; set; }
+            public string Email { get; set; } = string.Empty;  
+            public string Password { get; set; } = string.Empty;  
             public int FailAttempts { get; set; } = 0; // üst üste yanlış şifre sayısı
             public bool IsLocked { get; set; } = false; // kilit kontrolü
         }
