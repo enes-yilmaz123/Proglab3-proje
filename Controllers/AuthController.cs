@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Mvc; // controller çalışması için
 using StajYonetimSistemi.Data;  //context oluşturmak için ef core
 using StajYonetimSistemi.Services;     // hashlemek için 
 using StajYonetimSistemi.ViewModels;  
-using StajYonetimSistemi.Models; 
+using StajYonetimSistemi.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Runtime.CompilerServices;
 
 //bu sayfa kullanıcının girdiği bilgileri data basedekilerle karşılaştırıcak olan controller için 
 
@@ -51,7 +53,15 @@ namespace StajYonetimSistemi.Controllers
                 ModelState.AddModelError("", "E-posta veya şifre hatalı"); // hata fırlat
                 return View(formInfo);// tekar hatalı şifre ve e posta ile tekrar formu gönderiyoruz
             }
+            if (user.IsLocked) //kullanıcı  kilitliyse
+            {
+                _context.LoginLogs.Add(new LoginLog { Email = formInfo.Email , IsSuccess = false}); //log oluşturur
+                _context.SaveChanges();
 
+                ModelState.AddModelError("", "Hesabınız kilitlendi yönetici ile iletişime geçin!!"); //error mesajı fırlatır
+                return View(formInfo);
+            }
+            
             return View(formInfo); // geçici olarak yazıldı return atmadan uyarı veriyor 
         }
 
