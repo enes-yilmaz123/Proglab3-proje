@@ -79,7 +79,7 @@ namespace StajYonetimSistemi.Controllers
                 ModelState.AddModelError("", "E-posta veya şifre hatalı"); // hata fırlat
                 return View(formInfo);// tekar hatalı şifre ve e posta ile tekrar formu gönderiyoruz
             }
-            
+
             // buradan sonra sadece başarılı olduğu durum kalıyor 
             user.FailAttempts = 0;
             _context.LoginLogs.Add(new LoginLog { Email = formInfo.Email , IsSuccess = true});
@@ -108,6 +108,12 @@ namespace StajYonetimSistemi.Controllers
             return RedirectToAction("Index", "Home"); 
             // giriş yapılınca ana sayfaya gönder
         }
-
+        [HttpPost]// çıkış yapılınca cookie yi göndermeyi bırakır
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); // az önce kullandığımız fonksiyonun out versiyonu
+            return RedirectToAction("Login"); // tekrardan giriş sayfasına yönlendiriyoruz
+        }
+ 
     }
 }
