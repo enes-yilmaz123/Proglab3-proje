@@ -103,6 +103,21 @@ namespace StajYonetimSistemi.Migrations
                 {
                     b.HasBaseType("StajYonetimSistemi.Models.User");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DogumTarihi")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ek16TeslimYili")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -111,7 +126,25 @@ namespace StajYonetimSistemi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("SaglikYaridimiVarMi")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("StajGunu")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("StudentNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TcKimlikNo")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Uyruk")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
