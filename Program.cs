@@ -18,8 +18,13 @@ builder.Services.AddDbContext<StajDbContext>(options => options.UseSqlite("Data 
 //                                                  sql lite kullanacağımızı bildiriyoruz
 
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => { options.LoginPath = "/Auth/Login";});
 // admin sayfası yada öğrencilerin evrak yükleme sayfası gibi korumalı sayfalara girince buraya yönlendirilir
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.LoginPath = "/Auth/Login";              // giriş yapmamışsa
+    options.AccessDeniedPath = "/Auth/AccessDenied"; // giriş yapmış ama rolü uygun değilse
+});
+
 
 var app = builder.Build();
 
@@ -34,9 +39,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization(); // bu fonksiyon kim oluğunu öğrenir
 
 app.UseAuthentication(); //cookie yi inceler ve bu kim olduğuna göre yetkisi olup olmadığına karar verir
+app.UseAuthorization(); // bu fonksiyon kim oluğunu öğrenir
 
 app.MapStaticAssets();
 

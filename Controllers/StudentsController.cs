@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc; // controller kalıtımı için gerekli kütüph
 using StajYonetimSistemi.Data;
 using StajYonetimSistemi.Models;
 using System.Linq; //  veri tabanından veri çekerken kullanılacak fonksiyonlar için 
+using Microsoft.AspNetCore.Authorization; // yetkilendirme için
 
 // bu controller data baseye erişim sağlıyacak , veri çekicek ve bize servis edicek yapı
 
 namespace StajYonetimSistemi.Controllers
 {
+    [Authorize(Roles = "ROLE_ADMIN")]
     public class StudentsController : Controller
     {
         // veriyi çekicek olan data baseye erişimi olan yapıyı oluşturuyoruz
