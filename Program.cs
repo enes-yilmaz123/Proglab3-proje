@@ -39,9 +39,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization(); // bu fonksiyon kim oluğunu öğrenir
 
 app.UseAuthentication(); //cookie yi inceler ve bu kim olduğuna göre yetkisi olup olmadığına karar verir
+app.UseAuthorization(); // bu fonksiyon kim oluğunu öğrenir
 
 app.MapStaticAssets();
 
