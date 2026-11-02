@@ -32,4 +32,6 @@
 10. dosya formatı kuralı yazıldı doc docx pdf jpg jpeg ve png uzantıları kabul ediliyor diğerleri reddediliyor 
 11. şu anda başta ve sondaki boşluklar silinmiyor bu işlem en son kuralları çağıran katmanda tek yerde yapılacak
 12. edestek forumundaki cevaba göre vizede evrak yükleme kontrolleri sadece dosya formatı ve uzantı kontrolünü kapsıyor, bu yüzden adres, öğretim yılı, teslim tarihi ve staj günü gibi diğer doğrulama kurallarına vizeden sonra devam edilecek
- 
+13. yüklenen dosyayı sunucuya kaydeden DosyaKaydedici servisi yazıldı, dosya Guid ile yeni isim alıp uploads klasörüne kaydediliyor, gerçek adı veri tabanında tutuluyor
+14. uploads klasörü gitignore a eklendi
+15. DocumentsController yazıldı, dosya uzantısı kontrol edilip kaydediliyor ve Document tablosuna ekleniyor, yükleme sayfası henüz eklenmedi
