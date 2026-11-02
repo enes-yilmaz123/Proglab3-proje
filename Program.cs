@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore; // ef core kütüphanesini ekler
 using StajYonetimSistemi.Data; // data base ile bağlantıyı sağlıyan köprüyü kullanmamızı sağlar
+using StajYonetimSistemi.Services; // PasswordService i kaydetmek için
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 //bir kullanıcının giriş bilgilerini karşılaşitırdıktan sonra eğerki doğru ise sunucu tarafından bir cookie göndeririz
@@ -16,6 +17,9 @@ builder.Services.AddControllersWithViews();
 //projeyi çalıştırdığımda ana klasörün içine staj.db adında bir dosya oluştur ve bütün tabloları o dosyanın içine yaz demek oluyor
 builder.Services.AddDbContext<StajDbContext>(options => options.UseSqlite("Data Source=staj.db"));
 //                                                  sql lite kullanacağımızı bildiriyoruz
+
+// AuthController şifre hashlemek için PasswordService ister, kayıtlı değilse sayfa açılmaz
+builder.Services.AddScoped<PasswordService>();
 
 
 // admin sayfası yada öğrencilerin evrak yükleme sayfası gibi korumalı sayfalara girince buraya yönlendirilir
