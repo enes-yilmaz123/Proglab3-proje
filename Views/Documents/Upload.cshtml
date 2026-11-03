@@ -1,0 +1,23 @@
+@* sayfanın sekmede görünen başlığı *@
+@{ @*@{} sayesinde html kodlarının içine c# yazabiliyoruz*@
+    ViewData["Title"] = "Belge Yükle";
+}
+
+@* sayfadaki büyük başlık *@
+<h2>Ek-16 Belgesi Yükle</h2>
+
+@* controller'dan Mesaj geldiyse yeşil yazıyla göster *@
+@if (ViewBag.Mesaj != null)
+{
+    <p style="color: green;">@ViewBag.Mesaj</p>
+}
+
+@* controller'ın ModelState.AddModelError ile eklediği hatalar burada kırmızı görünür *@
+<div asp-validation-summary="ModelOnly" style="color: red;"></div>
+
+@* method="post": butona basınca POST gönderir, enctype: dosya yüklemek için şart *@
+<form method="post" enctype="multipart/form-data">
+    @* name="dosya": controller'daki IFormFile dosya parametresiyle aynı olmalı *@
+    <input type="file" name="dosya" />
+    <button type="submit">Yükle</button>
+</form>
