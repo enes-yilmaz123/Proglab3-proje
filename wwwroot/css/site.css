@@ -29,3 +29,15 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* uyarı kutusunun içindeki hata listesini sadeleştirir: madde işareti ve alt boşluk yok */
+.alert .validation-summary-errors ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+/* dokunma hedefi: normal butonlar en az 44 piksel yüksekliğinde (WCAG 2.5.5, Apple önerisi) */
+.btn:not(.btn-sm) {
+  min-height: 2.75rem;
+}
