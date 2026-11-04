@@ -1,23 +1,34 @@
 @* sayfanın sekmede görünen başlığı *@
-@{ @*@{} sayesinde html kodlarının içine c# yazabiliyoruz*@
+@{
     ViewData["Title"] = "Belge Yükle";
 }
 
-@* sayfadaki büyük başlık *@
-<h2>Ek-16 Belgesi Yükle</h2>
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                @* sayfadaki büyük başlık *@
+                <h2 class="card-title mb-3">Ek-16 Belgesi Yükle</h2>
+                <p class="text-muted">Kabul edilen formatlar: Word (.doc, .docx), PDF, JPEG ve PNG.</p>
 
-@* controller'dan Mesaj geldiyse yeşil yazıyla göster *@
-@if (ViewBag.Mesaj != null)
-{
-    <p style="color: green;">@ViewBag.Mesaj</p>
-}
+                @* controller'dan Mesaj geldiyse yeşil kutuda göster *@
+                @if (ViewBag.Mesaj != null)
+                {
+                    <div class="alert alert-success">@ViewBag.Mesaj</div>
+                }
 
-@* controller'ın ModelState.AddModelError ile eklediği hatalar burada kırmızı görünür *@
-<div asp-validation-summary="ModelOnly" style="color: red;"></div>
+                @* controller'ın ModelState.AddModelError ile eklediği hatalar burada kırmızı görünür *@
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-@* method="post": butona basınca POST gönderir, enctype: dosya yüklemek için şart *@
-<form method="post" enctype="multipart/form-data">
-    @* name="dosya": controller'daki IFormFile dosya parametresiyle aynı olmalı *@
-    <input type="file" name="dosya" />
-    <button type="submit">Yükle</button>
-</form>
+                @* method="post": butona basınca POST gönderir, enctype: dosya yüklemek için şart *@
+                <form method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        @* name="dosya": controller'daki IFormFile dosya parametresiyle aynı olmalı *@
+                        <input type="file" name="dosya" class="form-control" accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Yükle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
