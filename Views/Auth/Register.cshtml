@@ -44,7 +44,7 @@
             <div class="mb-3">
                 <label asp-for="Password" class="form-label">Şifre</label>
                 <input asp-for="Password" type="password" class="form-control" autocomplete="new-password" aria-describedby="sifreIpucu" />
-                <div id="sifreIpucu" class="form-text">En az 6 karakter olmalı.</div>
+                <div id="sifreIpucu" class="form-text">En az 8 karakter; en az bir büyük harf, bir küçük harf ve bir rakam içermeli.</div>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
