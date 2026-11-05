@@ -128,7 +128,7 @@ namespace StajYonetimSistemi.Controllers
         }
 
         [HttpPost] // ekranında bilgileri alan fonksiyon
-        public IActionResult Register(RegisterViewModel formInfo)
+        public async Task<IActionResult> Register(RegisterViewModel formInfo)
         {
             if (!ModelState.IsValid) //boşsa formu  tekrar gönder
             {
@@ -154,8 +154,18 @@ namespace StajYonetimSistemi.Controllers
 
             _context.Students.Add(student); /// buda databaseye eklemesi için controllıra verdiğimiz kod sonrada yenileyip data baseye kaydediyoruz
             _context.SaveChanges();
+        
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, student.Email),
+                new Claim(ClaimTypes.Role, "ROLE_STUDENT")
+            };
 
-            return RedirectToAction("Login"); // başarılı registerdan sonra /Auth/Login adresine yönlendirir
+            var kimlik = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(kimlik));
+
+            // burada register yapınca direkt olarak giriş yapılmış olunması için cookie oluştuyoruz
+            return RedirectToAction("Index", "Home");
         }
     }
 }

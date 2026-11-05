@@ -16,10 +16,12 @@ namespace StajYonetimSistemi.ViewModels
 
         [Required(ErrorMessage = "E-posta zorunludur")]
         [EmailAddress(ErrorMessage = "Geçerli bir e-posta girin")] // email adresinin biçimi kontrol eder
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "E-posta adresi ornek@alanadi.com biçiminde olmalı")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Şifre zorunludur")]
-        [MinLength(6, ErrorMessage = "Şifre en az 6 karakter olmalı")]
+        [MinLength(8, ErrorMessage = "Şifre en az 8 karakter olmalı")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", ErrorMessage = "Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermeli")]
         public string Password { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Şifre tekrarı zorunludur")] // yanlış şifre belirlenmemesi için doğrulama
