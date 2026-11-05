@@ -6,9 +6,11 @@ namespace StajYonetimSistemi.ViewModels
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "İsim zorunludur")]
+        [RegularExpression(@"^[A-Za-zÇĞİÖŞÜçğıöşü]+([ '\-][A-Za-zÇĞİÖŞÜçğıöşü]+)*$", ErrorMessage = "İsim sadece harflerden oluşmalı, başında ya da sonunda boşluk olamaz")]
         public string FirstName { get; set; } = string.Empty;
-
+        
         [Required(ErrorMessage = "Soyad zorunludur")]
+        [RegularExpression(@"^[A-Za-zÇĞİÖŞÜçğıöşü]+([ '\-][A-Za-zÇĞİÖŞÜçğıöşü]+)*$", ErrorMessage = "Soyad sadece harflerden oluşmalı, başında ya da sonunda boşluk olamaz")]
         public string LastName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Öğrenci numarası zorunludur")]
