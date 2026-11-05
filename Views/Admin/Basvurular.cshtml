@@ -1,0 +1,128 @@
+@using StajYonetimSistemi.Models
+@using StajYonetimSistemi.ViewModels
+@model BasvurularViewModel
+
+@* sayfanın sekmede görünen başlığı *@
+@{
+    ViewData["Title"] = "Başvurular";
+    var tr = new System.Globalization.CultureInfo("tr-TR");
+
+    // sekmeler: "Tümü" için durum boş bırakılır
+    var sekmeler = new (string Ad, DocumentStatus? Durum)[]
+    {
+        ("Tümü", null),
+        ("Yüklendi", DocumentStatus.Yuklendi),
+        ("İnceleniyor", DocumentStatus.Inceleniyor),
+        ("Hatalı / Eksik", DocumentStatus.HataliEksik),
+        ("Onaylandı", DocumentStatus.Onaylandi),
+        ("Tamamlandı", DocumentStatus.Tamamlandi)
+    };
+}
+
+@functions {
+    // durum rozetinin rengi; renk tek başına anlam taşımasın diye rozetin içinde yazı da var
+    static string Rozet(DocumentStatus durum) => durum switch
+    {
+        DocumentStatus.Inceleniyor => "text-bg-warning",
+        DocumentStatus.HataliEksik => "text-bg-danger",
+        DocumentStatus.Onaylandi => "text-bg-info",
+        DocumentStatus.Tamamlandi => "text-bg-success",
+        _ => "text-bg-secondary"
+    };
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3 belir">
+    <div>
+        <h1 class="h3 mb-1">Başvurular</h1>
+        <p class="text-muted mb-0">Yüklenen staj belgeleri.</p>
+    </div>
+    <span class="badge text-bg-light border fs-6">@Model.Satirlar.Count belge</span>
+</div>
+
+@* duruma göre sekmeler: seçili sekme "active" olur, yazdığın arama sekme değişince de korunur *@
+<nav aria-label="Duruma göre filtre" class="mb-3">
+    <ul class="nav nav-pills gap-1">
+        @foreach (var sekme in sekmeler)
+        {
+            var aktif = Model.SecilenDurum == sekme.Durum;
+            <li class="nav-item">
+                <a class="nav-link @(aktif ? "active" : "")"
+                   aria-current="@(aktif ? "page" : null)"
+                   asp-action="Basvurular"
+                   asp-route-durum="@sekme.Durum"
+                   asp-route-arama="@Model.Arama">@sekme.Ad</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@* arama: öğrenci adı ya da numarasına göre *@
+<form method="get" asp-action="Basvurular" class="row g-2 mb-3" role="search">
+    @if (Model.SecilenDurum != null)
+    {
+        <input type="hidden" name="durum" value="@Model.SecilenDurum" />
+    }
+    <div class="col-12 col-md-6 col-lg-5">
+        <label for="arama" class="visually-hidden">Öğrenci adı ya da numarası</label>
+        <input type="search" class="form-control" id="arama" name="arama" value="@Model.Arama" placeholder="Öğrenci adı ya da numarası" />
+    </div>
+    <div class="col-auto d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Ara</button>
+        @if (!string.IsNullOrWhiteSpace(Model.Arama))
+        {
+            <a class="btn btn-outline-secondary" asp-action="Basvurular" asp-route-durum="@Model.SecilenDurum">Aramayı temizle</a>
+        }
+    </div>
+</form>
+
+<div class="card shadow-sm belir belir-1">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <caption class="visually-hidden">Yüklenen belgelerin öğrenci, dosya, tarih ve durum listesi</caption>
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Öğrenci</th>
+                    <th scope="col">Öğrenci No</th>
+                    <th scope="col">Dosya</th>
+                    <th scope="col">Yükleme tarihi</th>
+                    <th scope="col">Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Satirlar.Any())
+                {
+                    foreach (var satir in Model.Satirlar)
+                    {
+                        <tr>
+                            <td>@satir.OgrenciAdSoyad</td>
+                            <td>@satir.OgrenciNo</td>
+                            <td class="text-break">@satir.DosyaAdi</td>
+                            <td>@satir.YuklemeTarihi.ToString("g", tr)</td>
+                            <td><span class="badge @Rozet(satir.Durum)">@satir.DurumMetni</span></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    @* boş liste: neden boş olduğunu söyler *@
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            @if (!string.IsNullOrWhiteSpace(Model.Arama))
+                            {
+                                <text>"@Model.Arama" için sonuç bulunamadı. Başka bir ad ya da numara dene.</text>
+                            }
+                            else
+                            {
+                                <text>Bu durumda belge yok.</text>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a class="btn btn-outline-secondary" asp-action="Index">Yönetim Paneli</a>
+</div>

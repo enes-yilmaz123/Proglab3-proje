@@ -1,0 +1,95 @@
+@using StajYonetimSistemi.Models
+@using StajYonetimSistemi.ViewModels
+@model AdminOzetViewModel
+
+@* sayfanın sekmede görünen başlığı *@
+@{
+    ViewData["Title"] = "Yönetim Paneli";
+}
+
+<div class="mb-4 belir">
+    <h1 class="h3 mb-1">Yönetim Paneli</h1>
+    <p class="text-muted mb-0">Öğrencileri ve staj başvurularını buradan yönetebilirsin.</p>
+</div>
+
+@* özet sayılar: her kartta sayının yanında ne olduğu yazıyla da belirtilir; sayı 0 ise listeye gitmenin anlamı yok, bağlantı yerine soluk yazı çıkar *@
+<section class="row row-cols-2 row-cols-md-4 g-3 mb-4" aria-label="Özet sayılar">
+    <div class="col belir belir-1">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="display-6 fw-semibold mb-0">@Model.OgrenciSayisi</p>
+                <p class="text-muted mb-0">Öğrenci</p>
+            </div>
+        </div>
+    </div>
+    <div class="col belir belir-1">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="display-6 fw-semibold mb-0">@Model.ToplamBelge</p>
+                <p class="text-muted mb-0">Toplam belge</p>
+            </div>
+        </div>
+    </div>
+    <div class="col belir belir-2">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="display-6 fw-semibold mb-0">@Model.HataliEksik</p>
+                <p class="text-muted mb-1">Hatalı / eksik</p>
+                @if (Model.HataliEksik > 0)
+                {
+                    <a class="small" asp-action="Basvurular" asp-route-durum="@DocumentStatus.HataliEksik">Listele</a>
+                }
+                else
+                {
+                    <span class="small text-muted">Kayıt yok</span>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col belir belir-2">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="display-6 fw-semibold mb-0">@Model.Tamamlanan</p>
+                <p class="text-muted mb-1">Tamamlanan</p>
+                @if (Model.Tamamlanan > 0)
+                {
+                    <a class="small" asp-action="Basvurular" asp-route-durum="@DocumentStatus.Tamamlandi">Listele</a>
+                }
+                else
+                {
+                    <span class="small text-muted">Kayıt yok</span>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row row-cols-1 row-cols-md-3 g-3" aria-label="Yönetim işlemleri">
+    <div class="col belir belir-3">
+        <div class="card h-100 adim-karti">
+            <div class="card-body d-flex flex-column">
+                <h2 class="h5 card-title">Öğrenci listesi</h2>
+                <p class="card-text text-muted">Kayıtlı öğrencileri görüntüle.</p>
+                <a class="btn btn-primary mt-auto align-self-start" asp-controller="Students" asp-action="Index">Listeyi aç</a>
+            </div>
+        </div>
+    </div>
+    <div class="col belir belir-3">
+        <div class="card h-100 adim-karti">
+            <div class="card-body d-flex flex-column">
+                <h2 class="h5 card-title">Başvurular</h2>
+                <p class="card-text text-muted">Yüklenen belgeleri duruma göre incele.</p>
+                <a class="btn btn-primary mt-auto align-self-start" asp-action="Basvurular">Başvuruları aç</a>
+            </div>
+        </div>
+    </div>
+    <div class="col belir belir-3">
+        <div class="card h-100 adim-karti">
+            <div class="card-body d-flex flex-column">
+                <h2 class="h5 card-title">Veri seti</h2>
+                <p class="card-text text-muted">Kontrol için kullanılan veri setini yükle.</p>
+                <a class="btn btn-primary mt-auto align-self-start" asp-action="VeriSeti">Veri setine git</a>
+            </div>
+        </div>
+    </div>
+</section>
