@@ -4,12 +4,14 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card shadow-sm">
-            <div class="card-body">
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow-sm kimlik-karti belir">
+            <div class="card-body p-4">
                 @* sayfadaki büyük başlık *@
-                <h2 class="card-title mb-3">Ek-16 Belgesi Yükle</h2>
-                <p class="text-muted">Kabul edilen formatlar: Word (.doc, .docx), PDF, JPEG ve PNG.</p>
+                <div class="mb-3">
+                    <h1 class="h3 mb-1">Ek-16 Belgesi Yükle</h1>
+                    <p class="text-muted mb-0">Staj başvuru formunu sisteme yükle.</p>
+                </div>
 
                 @* controller'dan Mesaj geldiyse "Başarılı" kutusunda göster; renge ek olarak yazıyla da belirtilir *@
                 @if (ViewBag.Mesaj != null)
@@ -28,12 +30,43 @@
                     </div>
                 }
 
+                @* tarayıcıda anında çıkan hata (yanlış uzantı); sunucu yine de kontrol eder *@
+                <div id="istemciHata" class="alert alert-danger" role="alert" hidden></div>
+
                 @* method="post": butona basınca POST gönderir, enctype: dosya yüklemek için şart *@
                 <form method="post" enctype="multipart/form-data" id="yuklemeFormu">
-                    <div class="mb-3">
-                        @* name="dosya": controller'daki IFormFile dosya parametresiyle aynı olmalı *@
-                        <label for="dosya" class="form-label">Belge dosyası</label>
-                        <input type="file" id="dosya" name="dosya" class="form-control" accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" />
+                    <div class="yukleme-alani text-center mb-3" id="yuklemeAlani">
+                        <svg class="yukleme-ikon" aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 16V4" /><path d="M7 9l5-5 5 5" /><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" />
+                        </svg>
+                        <p class="fw-semibold mb-1">Dosyayı buraya sürükle</p>
+                        <p class="text-muted small mb-3">ya da bilgisayarından seç</p>
+
+                        <label for="dosya" class="btn btn-outline-primary mb-0">Dosya seç</label>
+                        @* name="dosya": controller'daki IFormFile dosya parametresiyle aynı olmalı; kutu gizli ama klavyeyle odaklanabilir *@
+                        <input type="file" id="dosya" name="dosya" class="visually-hidden" accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" />
+
+                        <div class="mt-3 d-flex flex-wrap justify-content-center gap-1">
+                            <span class="badge text-bg-light border">DOC</span>
+                            <span class="badge text-bg-light border">DOCX</span>
+                            <span class="badge text-bg-light border">PDF</span>
+                            <span class="badge text-bg-light border">JPG</span>
+                            <span class="badge text-bg-light border">PNG</span>
+                            <span class="badge text-bg-light border">JPEG</span>
+                        </div>
+                    </div>
+
+                    @* seçilen dosyanın kartı: dosya seçilince görünür, "Kaldır" ile geri alınır *@
+                    <div class="secilen-dosya d-flex align-items-center gap-3 mb-3" id="secilenKart" aria-live="polite" hidden>
+                        <div class="flex-grow-1 text-truncate">
+                            <div class="fw-semibold text-truncate" id="secilenAd"></div>
+                            <div class="small text-muted" id="secilenBoyut"></div>
+                        </div>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="dosyaKaldir">Kaldır</button>
+                    </div>
+
+                    <div class="alert alert-light border small mb-4" role="note">
+                        <strong>Hatırlatma:</strong> İşveren bölümü (imza ve kaşe dahil) dolu, öğrenci ve staj danışmanı onay bölümleri boş olmalı.
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
@@ -48,9 +81,80 @@
 
 @section Scripts {
     <script>
+        var form = document.getElementById("yuklemeFormu");
+        var alan = document.getElementById("yuklemeAlani");
+        var girdi = document.getElementById("dosya");
+        var kart = document.getElementById("secilenKart");
+        var kartAd = document.getElementById("secilenAd");
+        var kartBoyut = document.getElementById("secilenBoyut");
+        var kaldir = document.getElementById("dosyaKaldir");
+        var hata = document.getElementById("istemciHata");
+        var dugme = document.getElementById("yukleDugmesi");
+        var izinli = [".doc", ".docx", ".pdf", ".jpg", ".jpeg", ".png"];
+
+        // 2048 bayt gibi bir sayıyı "2 KB" ya da "1,5 MB" yazısına çevirir
+        function boyutYazisi(bayt) {
+            if (bayt < 1048576) { return Math.max(1, Math.round(bayt / 1024)) + " KB"; }
+            return (bayt / 1048576).toFixed(1).replace(".", ",") + " MB";
+        }
+
+        // seçilen dosyayı kontrol eder: uzantı uygunsa kartta gösterir, değilse hata verip butonu kilitler
+        function dosyaKontrol() {
+            hata.hidden = true;
+            hata.textContent = "";
+            kart.hidden = true;
+            dugme.disabled = false;
+
+            if (girdi.files.length === 0) { return; }
+
+            var dosya = girdi.files[0];
+            var nokta = dosya.name.lastIndexOf(".");
+            var uzanti = nokta >= 0 ? dosya.name.substring(nokta).toLowerCase() : "";
+
+            if (izinli.indexOf(uzanti) === -1) {
+                hata.textContent = "Hata: " + (uzanti === "" ? "Uzantısız dosyalar" : uzanti + " biçimi") + " desteklenmiyor. Kabul edilen: Word, PDF, JPEG ve PNG.";
+                hata.hidden = false;
+                dugme.disabled = true;
+                return;
+            }
+
+            kartAd.textContent = dosya.name;
+            kartBoyut.textContent = boyutYazisi(dosya.size);
+            kart.hidden = false;
+        }
+
+        girdi.addEventListener("change", dosyaKontrol);
+
+        // "Kaldır": seçimi geri alır
+        kaldir.addEventListener("click", function () {
+            girdi.value = "";
+            dosyaKontrol();
+        });
+
+        // sürükle-bırak: alanın üstüne gelince çerçeve yeşil olur, bırakılan ilk dosya kutuya yerleşir
+        ["dragenter", "dragover"].forEach(function (olay) {
+            alan.addEventListener(olay, function (e) {
+                e.preventDefault();
+                alan.classList.add("surukleniyor");
+            });
+        });
+        ["dragleave", "drop"].forEach(function (olay) {
+            alan.addEventListener(olay, function () {
+                alan.classList.remove("surukleniyor");
+            });
+        });
+        alan.addEventListener("drop", function (e) {
+            e.preventDefault();
+            if (e.dataTransfer.files.length > 0) {
+                var liste = new DataTransfer();
+                liste.items.add(e.dataTransfer.files[0]);
+                girdi.files = liste.files;
+                dosyaKontrol();
+            }
+        });
+
         // anında geri bildirim: gönderilirken buton kilitlenir ve "Yükleniyor…" yazar
-        document.getElementById("yuklemeFormu").addEventListener("submit", function () {
-            var dugme = document.getElementById("yukleDugmesi");
+        form.addEventListener("submit", function () {
             dugme.disabled = true;
             dugme.textContent = "Yükleniyor…";
         });
