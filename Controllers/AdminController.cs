@@ -80,5 +80,11 @@ namespace StajYonetimSistemi.Controllers
             };
             return View(model);
         }
+
+        // veri seti yükleme sayfası şimdilik sadece arayüz
+        public IActionResult VeriSeti()
+        {
+            return View();
+        }
     }
 }
