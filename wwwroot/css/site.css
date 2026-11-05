@@ -111,12 +111,6 @@ body {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 }
 
-/* hareketi azaltmak isteyen kullanıcıda animasyonlar kapanır */
-@media (prefers-reduced-motion: reduce) {
-  .belir { animation: none; }
-  .adim-karti { transition: none; }
-  .adim-karti:hover { transform: none; }
-}
 /* giriş ve kayıt kartı: üstte ince yeşil çizgi, küçük amblem */
 .kimlik-karti {
   border-top: 4px solid var(--kou-yesil);
@@ -140,4 +134,47 @@ body {
 .sifre-kurallari li.saglandi {
   color: var(--kou-yesil);
   font-weight: 500;
+}
+
+/* belge yükleme alanı */
+.yukleme-alani {
+  border: 2px dashed var(--bs-border-color);
+  border-radius: 0.75rem;
+  padding: 2rem 1.25rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* dosya sürüklenirken ya da klavyeyle alana gelinirken yeşil çerçeve */
+.yukleme-alani.surukleniyor,
+.yukleme-alani:focus-within {
+  border-color: var(--kou-yesil);
+  background-color: rgba(6, 125, 59, 0.06);
+}
+
+.yukleme-ikon {
+  color: var(--kou-yesil);
+  margin-bottom: 0.5rem;
+}
+
+/* seçilen dosyanın kartı */
+.secilen-dosya {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  background: var(--bs-tertiary-bg);
+}
+
+/* dosya seçilmediyse kart gizli kalsın */
+.secilen-dosya[hidden] {
+  display: none;
+}
+
+/* hareketi azaltmak isteyen kullanıcıda animasyonlar kapanır */
+@media (prefers-reduced-motion: reduce) {
+  .belir { animation: none; }
+  .adim-karti { transition: none; }
+  .adim-karti:hover { transform: none; }
+  .yukleme-alani { transition: none; }
 }
