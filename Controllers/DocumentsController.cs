@@ -72,10 +72,12 @@ namespace StajYonetimSistemi.Controllers
                 StoredPath = kaydedilenAd
             };
             veritabani.Documents.Add(belge);
-            veritabani.SaveChanges();
 
             string uzanti = Path.GetExtension(kaydedilenAd).ToLowerInvariant(); // kaydedilen belge docx ise okuyup kurallara veriyoruz
             var rapor = new List<string>(); // ekranda göstereceğimiz satırlar
+
+            bool okundu = false; // belge başarıyla okunabildi mi
+            bool hataVar = false; // kontrollerden en az biri hata verdi mi
 
             if (uzanti == ".docx")
             {
@@ -90,6 +92,7 @@ namespace StajYonetimSistemi.Controllers
                     if (uyruk == "")
                     {
                         rapor.Add("Kimlik: uyruk belgeden okunamadi, kontrol yapilamadi"); // uyruğu okuyamadıysak hangi kuralın çalışacağını bilemeyiz
+                        hataVar = true;
                     }
                     else
                     {
@@ -105,13 +108,26 @@ namespace StajYonetimSistemi.Controllers
 
                         var kimlikSonuc = kimlikKurali.Dogrula(bilgi.TcNo);
                         rapor.Add("Kimlik: " + (kimlikSonuc.Gecerli ? "geçerli" : kimlikSonuc.Mesaj));
+                        if (!kimlikSonuc.Gecerli) 
+                        { 
+                            hataVar = true; 
+                        }
                 }
 
                     var telefonSonuc = new TelefonDogrulayici().Dogrula(bilgi.Telefon);
                     rapor.Add("Telefon: " + (telefonSonuc.Gecerli ? "geçerli" : telefonSonuc.Mesaj));
+                    if (!telefonSonuc.Gecerli) 
+                    { 
+                        hataVar = true; 
+                    }
 
                     var epostaSonuc = new EpostaDogrulayici().Dogrula(bilgi.Eposta);
                     rapor.Add("E-posta: " + (epostaSonuc.Gecerli ? "geçerli" : epostaSonuc.Mesaj));
+                    if (!epostaSonuc.Gecerli) 
+                    { 
+                        hataVar = true; 
+                    }
+                    okundu = true;
                 }
                 catch (Exception)
                 {
@@ -123,6 +139,22 @@ namespace StajYonetimSistemi.Controllers
             {
                 rapor.Add("Bu formatta otomatik okuma henüz desteklenmiyor");
             }
+            // kontrol sonucuna göre belgenin durumunu belirliyoruz
+            if (!okundu)
+            {
+                belge.Status = DocumentStatus.Inceleniyor; // otomatik okunamadı elle bakılmalı
+            }
+            else if (hataVar)
+            {
+                belge.Status = DocumentStatus.HataliEksik;
+            }
+            else
+            {
+                belge.Status = DocumentStatus.Onaylandi;
+            }
+            // rapor satırlarını alt alta tek yazı yapıp belgenin Rapor alanına kaydediyoruz
+            belge.Rapor = string.Join("\n", rapor);
+            veritabani.SaveChanges(); // belgeyi durumuyla birlikte kaydediyoruz
 
             // mesajı ve raporu TempData ile bir sonraki isteğe taşıyoruz 
             TempData["Mesaj"] = "Belge başariyla yüklendi";
