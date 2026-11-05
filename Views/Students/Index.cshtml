@@ -1,36 +1,53 @@
 @model List<StajYonetimSistemi.Models.Student>
 
-<h2>Öğrenci Listesi (Backend Test Ekranı)</h2>
+@* sayfanın sekmede görünen başlığı *@
+@{
+    ViewData["Title"] = "Öğrenci Listesi";
+    var sayi = Model?.Count ?? 0;
+}
 
-<table border="1" cellpadding="10">
-    <thead>
-        <tr>
-            <th>Öğrenci No</th>
-            <th>Ad</th>
-            <th>Soyad</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Eğer veri tabanından gelen liste boş değilse (içinde öğrenci varsa) döngüye gir -->
-        @if (Model != null && Model.Any())
-        {
-            foreach (var ogrenci in Model)
-            {
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3 belir">
+    <div>
+        <h1 class="h3 mb-1">Öğrenci Listesi</h1>
+        <p class="text-muted mb-0">Sisteme kayıtlı öğrenciler.</p>
+    </div>
+    <span class="badge text-bg-light border fs-6">@sayi öğrenci</span>
+</div>
+
+<div class="card shadow-sm belir belir-1">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <caption class="visually-hidden">Kayıtlı öğrencilerin numara, ad ve soyad listesi</caption>
+            <thead class="table-light">
                 <tr>
-                    <td>@ogrenci.StudentNumber</td>
-                    <td>@ogrenci.FirstName</td>
-                    <td>@ogrenci.LastName</td>
+                    <th scope="col">Öğrenci No</th>
+                    <th scope="col">Ad</th>
+                    <th scope="col">Soyad</th>
                 </tr>
-            }
-        }
-        else
-        {
-            <!-- Liste boşsa (veri tabanında henüz kayıt yoksa) bu mesajı göster -->
-            <tr>
-                <td colspan="3" style="text-align: center; color: red;">
-                    Henüz veri tabanında kayıtlı öğrenci yok. (Ama veri tabanı bağlantısı başarılı!)
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+            </thead>
+            <tbody>
+                @* listede öğrenci varsa her biri için bir satır yazılır *@
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var ogrenci in Model)
+                    {
+                        <tr>
+                            <td>@ogrenci.StudentNumber</td>
+                            <td>@ogrenci.FirstName</td>
+                            <td>@ogrenci.LastName</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    @* liste boşsa sakin bir açıklama gösterilir *@
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-4">
+                            Henüz kayıtlı öğrenci yok. Öğrenciler kayıt olunca burada görünecek.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div
