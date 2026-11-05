@@ -24,6 +24,8 @@ namespace StajYonetimSistemi.Controllers
 
         private readonly Ek16Ayiklayici ayiklayici = new Ek16Ayiklayici(); // okunan sözlüğü düzenli bilgiye çevirir
 
+        private readonly BilgiKarsilastirici karsilastirici = new BilgiKarsilastirici(); // belgedeki bilgiyle kayıtlı bilgiyi karşılaştırır
+
         public DocumentsController(StajDbContext context, IWebHostEnvironment ortam) // normalde new ile sınıfı biz oluştururken burada asp.net kendisi oluştruyor
         // asp.net parantez içindekileri bize hazır olarak verir StajDbContext context veri tabanı bağlantısı IWebHostEnvironment ortam ise projenin bilgisini verir
         {
@@ -154,6 +156,20 @@ namespace StajYonetimSistemi.Controllers
                     if (!epostaSonuc.Gecerli) 
                     { 
                         hataVar = true; 
+                    }
+                    // belgedeki bilgiyi kayıtlı öğrencinin bilgisiyle karşılaştırıyoruz
+                    var farklar = karsilastirici.Karsilastir(bilgi, ogrenci);
+                    if (farklar.Count == 0)
+                    {
+                        rapor.Add("Kayıt karşılaştırması: belgedeki bilgiler kayıtla uyuşuyor"); // hiç fark yoksa bunu yazıyoruz
+                    }
+                    else
+                    {
+                        foreach (var fark in farklar) // her farkı rapora ekliyoruz
+                        {
+                            rapor.Add(fark);
+                        }
+                        hataVar = true; // uyuşmazlık varsa belge hatalı sayılır
                     }
                     okundu = true;
                 }
