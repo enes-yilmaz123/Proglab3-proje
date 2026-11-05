@@ -485,4 +485,6 @@ $RECYCLE.BIN/
 
 
 staj.db
+staj.db-shm
+staj.db-wal
 uploads/
