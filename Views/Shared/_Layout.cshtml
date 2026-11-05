@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+@{
+    // şu an hangi sayfada olunduğunu bulur: menüde o bağlantı kalın yazılır ve ekran okuyucuya "geçerli sayfa" denir
+    var kontrol = ViewContext.RouteData.Values["controller"]?.ToString();
+    var islem = ViewContext.RouteData.Values["action"]?.ToString();
+    bool Burada(string k, string a) => kontrol == k && islem == a;
+}
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
@@ -25,18 +31,38 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                            <a class="nav-link text-dark @(Burada("Home", "Index") ? "fw-semibold" : "")"
+                               aria-current="@(Burada("Home", "Index") ? "page" : null)"
+                               asp-controller="Home" asp-action="Index">Ana Sayfa</a>
                         </li>
                         @if (User.IsInRole("ROLE_STUDENT"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Documents" asp-action="Upload">Belge Yükle</a>
+                                <a class="nav-link text-dark @(Burada("Documents", "Upload") ? "fw-semibold" : "")"
+                                   aria-current="@(Burada("Documents", "Upload") ? "page" : null)"
+                                   asp-controller="Documents" asp-action="Upload">Belge Yükle</a>
                             </li>
                         }
-                        @if (User.IsInRole("ROLE_ADMIN"))
+                        else if (User.IsInRole("ROLE_ADMIN"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Students" asp-action="Index">Öğrenciler</a>
+                                <a class="nav-link text-dark @(Burada("Admin", "Index") ? "fw-semibold" : "")"
+                                   aria-current="@(Burada("Admin", "Index") ? "page" : null)"
+                                   asp-controller="Admin" asp-action="Index">Yönetim Paneli</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark @(Burada("Admin", "Basvurular") ? "fw-semibold" : "")"
+                                   aria-current="@(Burada("Admin", "Basvurular") ? "page" : null)"
+                                   asp-controller="Admin" asp-action="Basvurular">Başvurular</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark @(Burada("Students", "Index") ? "fw-semibold" : "")"
+                                   aria-current="@(Burada("Students", "Index") ? "page" : null)"
+                                   asp-controller="Students" asp-action="Index">Öğrenciler</a>
+                            </li>
+                            @* yönetici belge yükleyemez: seçenek gizlenmez, soluk gösterilir *@
+                            <li class="nav-item">
+                                <span class="nav-link disabled" aria-disabled="true" title="Belge yükleme sadece öğrenciler içindir">Belge Yükle</span>
                             </li>
                         }
                     </ul>

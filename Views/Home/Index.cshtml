@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Ana Sayfa";
 }
 
@@ -20,37 +20,41 @@
         }
         else if (User.IsInRole("ROLE_ADMIN"))
         {
-            <a class="btn btn-primary" asp-controller="Students" asp-action="Index">Öğrencileri Görüntüle</a>
+            <a class="btn btn-primary" asp-controller="Admin" asp-action="Index">Yönetim Paneline Git</a>
         }
     </div>
 </section>
 
-<section class="row row-cols-1 row-cols-md-3 g-3 mt-2" aria-label="Nasıl çalışır">
-    <div class="col belir belir-1">
-        <div class="card h-100 adim-karti">
-            <div class="card-body">
-                <span class="adim-no" aria-hidden="true">1</span>
-                <h2 class="h5 card-title">Kayıt ol</h2>
-                <p class="card-text text-muted">Öğrenci bilgilerinle hesabını oluştur.</p>
+@* "nasıl çalışır" adımları öğrenciler içindir; yönetici için gösterilmez, ekran sade kalır *@
+@if (!User.IsInRole("ROLE_ADMIN"))
+{
+    <section class="row row-cols-1 row-cols-md-3 g-3 mt-2" aria-label="Nasıl çalışır">
+        <div class="col belir belir-1">
+            <div class="card h-100 adim-karti">
+                <div class="card-body">
+                    <span class="adim-no" aria-hidden="true">1</span>
+                    <h2 class="h5 card-title">Kayıt ol</h2>
+                    <p class="card-text text-muted">Öğrenci bilgilerinle hesabını oluştur.</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col belir belir-2">
-        <div class="card h-100 adim-karti">
-            <div class="card-body">
-                <span class="adim-no" aria-hidden="true">2</span>
-                <h2 class="h5 card-title">Belgeni yükle</h2>
-                <p class="card-text text-muted">Ek-16 formunu Word, PDF veya resim olarak sisteme yükle.</p>
+        <div class="col belir belir-2">
+            <div class="card h-100 adim-karti">
+                <div class="card-body">
+                    <span class="adim-no" aria-hidden="true">2</span>
+                    <h2 class="h5 card-title">Belgeni yükle</h2>
+                    <p class="card-text text-muted">Ek-16 formunu Word, PDF veya resim olarak sisteme yükle.</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col belir belir-3">
-        <div class="card h-100 adim-karti">
-            <div class="card-body">
-                <span class="adim-no" aria-hidden="true">3</span>
-                <h2 class="h5 card-title">Sonucu gör</h2>
-                <p class="card-text text-muted">Kontrol sonucunu ve varsa eksikleri incele.</p>
+        <div class="col belir belir-3">
+            <div class="card h-100 adim-karti">
+                <div class="card-body">
+                    <span class="adim-no" aria-hidden="true">3</span>
+                    <h2 class="h5 card-title">Sonucu gör</h2>
+                    <p class="card-text text-muted">Kontrol sonucunu ve varsa eksikleri incele.</p>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+}
