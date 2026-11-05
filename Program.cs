@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore; // ef core kütüphanesini ekler
 using StajYonetimSistemi.Data; // data base ile bağlantıyı sağlıyan köprüyü kullanmamızı sağlar
 using StajYonetimSistemi.Services; // PasswordService i kaydetmek için
+using StajYonetimSistemi.Models;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 //bir kullanıcının giriş bilgilerini karşılaşitırdıktan sonra eğerki doğru ise sunucu tarafından bir cookie göndeririz
@@ -31,6 +32,23 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())// kod ilk çalıştığında herhangi bir scope olmadığı için elle bir scope açıyoruz
+{
+    var db = scope.ServiceProvider.GetRequiredService<StajDbContext>();
+    db.Database.Migrate(); // eksik tabloları kendisi oluşturur, dotnet ef database update gerekmez
+
+    if (!db.Admins.Any()) // hiç admin yoksa bir tane oluştur
+    {
+        var sifre = app.Configuration["Admin:Sifre"]; // şifre kodda durmaz, ayar dosyasından okunur
+        if (!string.IsNullOrEmpty(sifre))
+        {
+            var sifreci = scope.ServiceProvider.GetRequiredService<PasswordService>();
+            db.Admins.Add(new Admin { Email = "admin@test.com", Password = sifreci.Hash(sifre) });
+            db.SaveChanges();
+        }
+    }
+}// geçici bir kod bloğu olucak büyük ihtimalle 
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
