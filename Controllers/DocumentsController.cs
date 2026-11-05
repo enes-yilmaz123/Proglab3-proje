@@ -152,6 +152,8 @@ namespace StajYonetimSistemi.Controllers
             {
                 belge.Status = DocumentStatus.Onaylandi;
             }
+            // rapor satırlarını alt alta tek yazı yapıp belgenin Rapor alanına kaydediyoruz
+            belge.Rapor = string.Join("\n", rapor);
             veritabani.SaveChanges(); // belgeyi durumuyla birlikte kaydediyoruz
 
             // mesajı ve raporu TempData ile bir sonraki isteğe taşıyoruz 
