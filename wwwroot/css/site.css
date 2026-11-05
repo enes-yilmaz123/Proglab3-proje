@@ -117,3 +117,27 @@ body {
   .adim-karti { transition: none; }
   .adim-karti:hover { transform: none; }
 }
+/* giriş ve kayıt kartı: üstte ince yeşil çizgi, küçük amblem */
+.kimlik-karti {
+  border-top: 4px solid var(--kou-yesil);
+}
+
+.kimlik-logo {
+  width: 64px;
+  height: 64px;
+}
+
+/* şifre göster/gizle düğmesi alanla aynı yükseklikte dursun */
+.input-group > .btn {
+  min-height: auto;
+}
+
+/* kayıttaki şifre kuralları listesi */
+.sifre-kurallari li {
+  color: var(--bs-secondary-color);
+}
+
+.sifre-kurallari li.saglandi {
+  color: var(--kou-yesil);
+  font-weight: 500;
+}
