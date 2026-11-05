@@ -40,4 +40,16 @@
 12. edestek forumundaki cevaba göre vizede evrak yükleme kontrolleri sadece dosya formatı ve uzantı kontrolünü kapsıyor, bu yüzden adres, öğretim yılı, teslim tarihi ve staj günü gibi diğer doğrulama kurallarına vizeden sonra devam edilecek
 13. yüklenen dosyayı sunucuya kaydeden DosyaKaydedici servisi yazıldı, dosya Guid ile yeni isim alıp uploads klasörüne kaydediliyor, gerçek adı veri tabanında tutuluyor
 14. uploads klasörü gitignore a eklendi
-15. DocumentsController yazıldı, dosya uzantısı kontrol edilip kaydediliyor ve Document tablosuna ekleniyor, yükleme sayfası henüz eklenmedi
+15. DocumentsController yazıldı, sadece öğrenci rolü girebiliyor, dosya uzantısı kontrol edilip kaydediliyor ve Document tablosuna ekleniyor
+16. Upload.cshtml yükleme sayfası eklendi, tasarımı frontend arkadaşa bırakıldı, hata ve başarı mesajları sayfada gösteriliyor
+17. controller dosya adı DocumentsController.cs olarak düzeltildi, mesajlardaki yazım hataları düzeltildi
+18. login ve yükleme akışı ayrı bir kopyada uçtan uca denendi, giriş, rol kontrolü, geçerli pdf kaydı, geçersiz uzantı ve boş dosya reddi çalışıyor
+19. forumdaki cevaba göre belgeden okunan bilgi ile kullanıcının bilgisi karşılaştırılacak, bunun için docx okuma işine başlandı, önce deneme projesinde yapıp sonra projeye taşındı
+20. DocumentFormat.OpenXml paketi eklendi, soyut BelgeOkuyucu sınıfı yazıldı, DocxOkuyucu bundan türetildi (soyutlama, kalıtım, çok biçimlilik), docx deki tabloları okuyup başlık ve değer çiftlerini sözlük olarak veriyor
+21. Ek16Bilgi sınıfı yazıldı (ad soyad, tc, uyruk, öğrenci no, telefon, e-posta), Ek16Ayiklayici sözlüğü bu sınıfa çeviriyor, tc ile uyruk ve telefon ile e-posta aynı hücrede olduğu için / işaretinden bölünüyor
+22. yüklenen docx belgesi okunup kimlik, telefon ve e-posta kurallarına veriliyor, sonuç yükleme sayfasında liste olarak gösteriliyor, uyruğa göre TC veya yabancı kimlik kuralı seçiliyor
+23. uyruk boşsa kimlik kontrolü yapılmıyor ve rapora uyruk okunamadı yazılıyor, bozuk docx yüklenirse try catch ile site çökmeden belge okunamadı yazıyor
+24. sayfa yenilenince (F5) belgenin ikinci kez yüklenmesi sorunu düzeltildi, yükleme sonrası RedirectToAction ve TempData kullanıldı
+25. geçersiz belgelerle denendi: tc 0 ile başlayan, hatalı telefon, hatalı e-posta, yabancı kimlik no 99 ile başlamıyor, bozuk docx, hepsinde beklenen mesajlar çıktı
+26. pdf, doc ve resim dosyaları kabul edilip kaydediliyor ama içleri okunmuyor, ekranda bu formatta otomatik okuma desteklenmiyor yazıyor, pdf için PdfPig ile okuma sonraya bırakıldı, resimler için OCR final aşamasında
+
