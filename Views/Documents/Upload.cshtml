@@ -11,24 +11,48 @@
                 <h2 class="card-title mb-3">Ek-16 Belgesi Yükle</h2>
                 <p class="text-muted">Kabul edilen formatlar: Word (.doc, .docx), PDF, JPEG ve PNG.</p>
 
-                @* controller'dan Mesaj geldiyse yeşil kutuda göster *@
+                @* controller'dan Mesaj geldiyse "Başarılı" kutusunda göster; renge ek olarak yazıyla da belirtilir *@
                 @if (ViewBag.Mesaj != null)
                 {
-                    <div class="alert alert-success">@ViewBag.Mesaj</div>
+                    <div class="alert alert-success" role="status">
+                        <strong>Başarılı:</strong> @ViewBag.Mesaj
+                    </div>
                 }
 
-                @* controller'ın ModelState.AddModelError ile eklediği hatalar burada kırmızı görünür *@
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                @* controller'ın ModelState.AddModelError ile eklediği hatalar varsa "Hata" kutusunda göster *@
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Hata:</strong>
+                        <div asp-validation-summary="ModelOnly"></div>
+                    </div>
+                }
 
                 @* method="post": butona basınca POST gönderir, enctype: dosya yüklemek için şart *@
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" id="yuklemeFormu">
                     <div class="mb-3">
                         @* name="dosya": controller'daki IFormFile dosya parametresiyle aynı olmalı *@
-                        <input type="file" name="dosya" class="form-control" accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" />
+                        <label for="dosya" class="form-label">Belge dosyası</label>
+                        <input type="file" id="dosya" name="dosya" class="form-control" accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" />
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Yükle</button>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">İptal</a>
+                        <button type="submit" class="btn btn-primary" id="yukleDugmesi">Belgeyi yükle</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // anında geri bildirim: gönderilirken buton kilitlenir ve "Yükleniyor…" yazar
+        document.getElementById("yuklemeFormu").addEventListener("submit", function () {
+            var dugme = document.getElementById("yukleDugmesi");
+            dugme.disabled = true;
+            dugme.textContent = "Yükleniyor…";
+        });
+    </script>
+}

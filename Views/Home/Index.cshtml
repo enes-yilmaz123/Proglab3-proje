@@ -2,17 +2,55 @@
     ViewData["Title"] = "Ana Sayfa";
 }
 
-<div class="text-center">
-    <h1 class="display-4">KOÜ Staj Sistemi'ne Hoş Geldiniz</h1>
-    <p class="lead">Staj evrakınızı (Ek-16) yükleyin, kontrol sonuçlarını görün.</p>
+<section class="text-center py-4 belir">
+    @* süs amaçlı büyük amblem; menüdeki amblem zaten adı söylediği için burada alt metni boş *@
+    <img src="~/img/kou-logo.png" alt="" width="110" height="110" class="mb-3" />
+    <h1 class="display-5 fw-semibold">Staj Evrak Yönetim Sistemi</h1>
+    <p class="lead text-muted col-lg-7 mx-auto">Kocaeli Üniversitesi öğrencileri için Ek-16 staj formu yükleme ve kontrol sistemi.</p>
 
-    @if (User.Identity?.IsAuthenticated != true)
-    {
-        <a class="btn btn-primary me-2" asp-controller="Auth" asp-action="Login">Giriş Yap</a>
-        <a class="btn btn-outline-primary" asp-controller="Auth" asp-action="Register">Kayıt Ol</a>
-    }
-    else if (User.IsInRole("ROLE_STUDENT"))
-    {
-        <a class="btn btn-primary" asp-controller="Documents" asp-action="Upload">Belge Yükle</a>
-    }
-</div>
+    <div class="d-flex justify-content-center gap-2 mt-4">
+        @if (User.Identity?.IsAuthenticated != true)
+        {
+            <a class="btn btn-primary" asp-controller="Auth" asp-action="Login">Giriş Yap</a>
+            <a class="btn btn-outline-primary" asp-controller="Auth" asp-action="Register">Kayıt Ol</a>
+        }
+        else if (User.IsInRole("ROLE_STUDENT"))
+        {
+            <a class="btn btn-primary" asp-controller="Documents" asp-action="Upload">Belge Yükle</a>
+        }
+        else if (User.IsInRole("ROLE_ADMIN"))
+        {
+            <a class="btn btn-primary" asp-controller="Students" asp-action="Index">Öğrencileri Görüntüle</a>
+        }
+    </div>
+</section>
+
+<section class="row row-cols-1 row-cols-md-3 g-3 mt-2" aria-label="Nasıl çalışır">
+    <div class="col belir belir-1">
+        <div class="card h-100 adim-karti">
+            <div class="card-body">
+                <span class="adim-no" aria-hidden="true">1</span>
+                <h2 class="h5 card-title">Kayıt ol</h2>
+                <p class="card-text text-muted">Öğrenci bilgilerinle hesabını oluştur.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col belir belir-2">
+        <div class="card h-100 adim-karti">
+            <div class="card-body">
+                <span class="adim-no" aria-hidden="true">2</span>
+                <h2 class="h5 card-title">Belgeni yükle</h2>
+                <p class="card-text text-muted">Ek-16 formunu Word, PDF veya resim olarak sisteme yükle.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col belir belir-3">
+        <div class="card h-100 adim-karti">
+            <div class="card-body">
+                <span class="adim-no" aria-hidden="true">3</span>
+                <h2 class="h5 card-title">Sonucu gör</h2>
+                <p class="card-text text-muted">Kontrol sonucunu ve varsa eksikleri incele.</p>
+            </div>
+        </div>
+    </div>
+</section>
