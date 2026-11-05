@@ -5,6 +5,7 @@ using StajYonetimSistemi.Models;
 using StajYonetimSistemi.Services;
 using StajYonetimSistemi.Validation;
 using System.Globalization; // tr-TR için 
+using StajYonetimSistemi.ViewModels;
 
 namespace StajYonetimSistemi.Controllers
 {
@@ -29,6 +30,33 @@ namespace StajYonetimSistemi.Controllers
             veritabani = context;
             uploadsKlasoru = Path.Combine(ortam.ContentRootPath, "uploads"); // uploads klasörünün tam yolu
             kaydedici = new DosyaKaydedici(uploadsKlasoru); // kaydediciye de aynı yolu veriyoruz
+        }
+        [HttpGet]
+// öğrencinin yüklediği belgeleri, durumları ve raporlarıyla listeler
+        public IActionResult Index()
+        {
+            string email = User.Identity?.Name ?? "";
+            var ogrenci = veritabani.Students.FirstOrDefault(s => s.Email == email);
+            if (ogrenci == null)
+            {
+                return RedirectToAction("Upload"); // öğrenci kaydı yoksa listeleyecek bir şey yok
+            }
+
+            // sadece bu öğrencinin belgeleri, en yeni en üstte
+            var belgeler = veritabani.Documents
+                .Where(d => d.StudentId == ogrenci.id)
+                .OrderByDescending(d => d.UploadDate)
+                .Select(d => new BelgeSatiriViewModel
+                {
+                    Id = d.id,
+                    DosyaAdi = d.OriginalFileName,
+                    YuklemeTarihi = d.UploadDate,
+                    Durum = d.Status,
+                    Rapor = d.Rapor
+                })
+                .ToList();
+
+            return View(new BelgelerimViewModel { Belgeler = belgeler });
         }
 
         [HttpGet]
