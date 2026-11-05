@@ -8,8 +8,9 @@ html {
   }
 }
 
+/* odak çizgisi: klavyeyle gezerken hangi öğede olunduğu görünsün (yeşil tema ile uyumlu) */
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem rgba(6, 125, 59, 0.6);
 }
 
 html {
@@ -40,4 +41,79 @@ body {
 /* dokunma hedefi: normal butonlar en az 44 piksel yüksekliğinde (WCAG 2.5.5, Apple önerisi) */
 .btn:not(.btn-sm) {
   min-height: 2.75rem;
+}
+
+/* KOÜ teması: amblemin yeşili (#09A350) beyaz yazıyla yeterli kontrast vermediği için koyulaştırıldı (#067D3B, yaklaşık 5,2:1) */
+:root {
+  --kou-yesil: #067D3B;
+  --kou-yesil-koyu: #05642F;
+  --bs-link-color-rgb: 6, 125, 59;
+  --bs-link-hover-color-rgb: 5, 100, 47;
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--kou-yesil);
+  --bs-btn-border-color: var(--kou-yesil);
+  --bs-btn-hover-bg: var(--kou-yesil-koyu);
+  --bs-btn-hover-border-color: var(--kou-yesil-koyu);
+  --bs-btn-active-bg: #044F25;
+  --bs-btn-active-border-color: #044F25;
+  --bs-btn-disabled-bg: var(--kou-yesil);
+  --bs-btn-disabled-border-color: var(--kou-yesil);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--kou-yesil);
+  --bs-btn-border-color: var(--kou-yesil);
+  --bs-btn-hover-bg: var(--kou-yesil);
+  --bs-btn-hover-border-color: var(--kou-yesil);
+  --bs-btn-active-bg: var(--kou-yesil-koyu);
+  --bs-btn-active-border-color: var(--kou-yesil-koyu);
+}
+
+/* menünün altında tek ince yeşil çizgi: arayüz iskeletinde renk az, vurgu tek yerde */
+.navbar.border-bottom {
+  border-bottom-color: var(--kou-yesil) !important;
+  border-bottom-width: 3px !important;
+}
+
+/* ana sayfadaki "nasıl çalışır" adım numarası */
+.adim-no {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.75rem;
+  border-radius: 50%;
+  background: var(--kou-yesil);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ince animasyonlar: sayfa açılırken hafif belirme, kartın üzerine gelince hafif yükselme */
+@keyframes belir {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.belir { animation: belir 0.5s ease-out both; }
+.belir-1 { animation-delay: 0.1s; }
+.belir-2 { animation-delay: 0.2s; }
+.belir-3 { animation-delay: 0.3s; }
+
+.adim-karti {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.adim-karti:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+/* hareketi azaltmak isteyen kullanıcıda animasyonlar kapanır */
+@media (prefers-reduced-motion: reduce) {
+  .belir { animation: none; }
+  .adim-karti { transition: none; }
+  .adim-karti:hover { transform: none; }
 }
