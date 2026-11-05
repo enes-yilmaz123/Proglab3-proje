@@ -1,0 +1,98 @@
+@using StajYonetimSistemi.Models
+@using StajYonetimSistemi.ViewModels
+@model BelgelerimViewModel
+
+@* sayfanın sekmede görünen başlığı *@
+@{
+    ViewData["Title"] = "Belgelerim";
+    var tr = new System.Globalization.CultureInfo("tr-TR");
+}
+
+@functions {
+    // durum rozetinin rengi; renk tek başına anlam taşımasın diye rozetin içinde yazı da var
+    static string Rozet(DocumentStatus durum) => durum switch
+    {
+        DocumentStatus.Inceleniyor => "text-bg-warning",
+        DocumentStatus.HataliEksik => "text-bg-danger",
+        DocumentStatus.Onaylandi => "text-bg-info",
+        DocumentStatus.Tamamlandi => "text-bg-success",
+        _ => "text-bg-secondary"
+    };
+
+    // rapor satırının başına işaret: geçerli ✓, bilgi ℹ, hata ✗ (renge ek olarak işaret ve yazı var)
+    static (string Isaret, string Sinif) Isaretle(string satir)
+    {
+        if (satir.EndsWith("geçerli")) { return ("✓", "text-success"); }
+        if (satir.Contains("okunamadi") || satir.Contains("desteklenmiyor")) { return ("ℹ", "text-muted"); }
+        return ("✗", "text-danger");
+    }
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3 belir">
+    <div>
+        <h1 class="h3 mb-1">Belgelerim</h1>
+        <p class="text-muted mb-0">Yüklediğin belgeler ve kontrol sonuçları.</p>
+    </div>
+    <a class="btn btn-primary" asp-controller="Documents" asp-action="Upload">Belge Yükle</a>
+</div>
+
+<div class="card shadow-sm belir belir-1">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <caption class="visually-hidden">Yüklediğin belgelerin dosya, tarih, durum ve kontrol sonucu listesi</caption>
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Dosya</th>
+                    <th scope="col">Yükleme tarihi</th>
+                    <th scope="col">Durum</th>
+                    <th scope="col">Kontrol sonucu</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Belgeler.Any())
+                {
+                    foreach (var belge in Model.Belgeler)
+                    {
+                        <tr>
+                            <td class="text-break">@belge.DosyaAdi</td>
+                            <td>@belge.YuklemeTarihi.ToString("g", tr)</td>
+                            <td><span class="badge @Rozet(belge.Durum)">@belge.DurumMetni</span></td>
+                            <td>
+                                @if (!belge.RaporSatirlari.Any())
+                                {
+                                    <span class="text-muted">Rapor yok</span>
+                                }
+                                else
+                                {
+                                    <details>
+                                        <summary>Sonucu göster</summary>
+                                        <ul class="list-unstyled small mt-2 mb-0">
+                                            @foreach (var satir in belge.RaporSatirlari)
+                                            {
+                                                var isaret = Isaretle(satir);
+                                                <li><span class="@isaret.Sinif" aria-hidden="true">@isaret.Isaret</span> @satir</li>
+                                            }
+                                        </ul>
+                                        @if (belge.Durum == DocumentStatus.HataliEksik)
+                                        {
+                                            <p class="small text-muted mt-2 mb-0">Belgeni düzeltip yeniden yükleyebilirsin.</p>
+                                        }
+                                    </details>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    @* hiç belge yoksa sakin bir açıklama ve yükleme yolu gösterilir *@
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            Henüz belge yüklemedin. Başlamak için "Belge Yükle" butonuna bas.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
