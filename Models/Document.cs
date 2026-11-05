@@ -13,5 +13,6 @@ namespace StajYonetimSistemi.Models
 
         public string OriginalFileName { get; set; } = string.Empty; // öğrencinin yüklediği ad
         public string StoredPath { get; set; } = string.Empty;  // sunucuda kaydedildiği yer
+        public string Rapor { get; set; } = string.Empty; // doğrulama raporu, hatalı alanları açıklar
     }
 }
