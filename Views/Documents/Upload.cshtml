@@ -12,11 +12,22 @@
                 <p class="text-muted">Kabul edilen formatlar: Word (.doc, .docx), PDF, JPEG ve PNG.</p>
 
                 @* controller'dan Mesaj geldiyse "Başarılı" kutusunda göster; renge ek olarak yazıyla da belirtilir *@
-                @if (ViewBag.Mesaj != null)
+                @if (TempData["Mesaj"] != null)
                 {
                     <div class="alert alert-success" role="status">
-                        <strong>Başarılı:</strong> @ViewBag.Mesaj
-                    </div>
+                    <strong>Başarılı:</strong> @TempData["Mesaj"]
+                     </div>
+                }
+
+                @* belge okunduysa kontrol sonuçlarını liste olarak göster *@
+                @if (TempData["Rapor"] is IEnumerable<string> rapor)
+                {
+                    <ul class="list-group mb-3">
+                    @foreach (string satir in rapor)
+                    {
+                        <li class="list-group-item">@satir</li>
+                    }
+                    </ul>
                 }
 
                 @* controller'ın ModelState.AddModelError ile eklediği hatalar varsa "Hata" kutusunda göster *@

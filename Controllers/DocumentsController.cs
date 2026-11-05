@@ -4,6 +4,7 @@ using StajYonetimSistemi.Data;
 using StajYonetimSistemi.Models;
 using StajYonetimSistemi.Services;
 using StajYonetimSistemi.Validation;
+using System.Globalization; // tr-TR için 
 
 namespace StajYonetimSistemi.Controllers
 {
@@ -16,13 +17,18 @@ namespace StajYonetimSistemi.Controllers
 
         private readonly DosyaKaydedici kaydedici;  // dosyayı diske kaydetmek icin
 
+        private readonly string uploadsKlasoru; // yüklenen dosyaların durduğu klasör okuyup kontrol etmek icin
+
         private readonly DosyaFormatDogrulayici formatKurali = new DosyaFormatDogrulayici(); // dosya uzantısını kontrol eden kural
+
+        private readonly Ek16Ayiklayici ayiklayici = new Ek16Ayiklayici(); // okunan sözlüğü düzenli bilgiye çevirir
 
         public DocumentsController(StajDbContext context, IWebHostEnvironment ortam) // normalde new ile sınıfı biz oluştururken burada asp.net kendisi oluştruyor
         // asp.net parantez içindekileri bize hazır olarak verir StajDbContext context veri tabanı bağlantısı IWebHostEnvironment ortam ise projenin bilgisini verir
         {
             veritabani = context;
-            kaydedici = new DosyaKaydedici(Path.Combine(ortam.ContentRootPath, "uploads")); // uploads klasörü oluşturur ortam.ContentRootPath ise yolun tamamı
+            uploadsKlasoru = Path.Combine(ortam.ContentRootPath, "uploads"); // uploads klasörünün tam yolu
+            kaydedici = new DosyaKaydedici(uploadsKlasoru); // kaydediciye de aynı yolu veriyoruz
         }
 
         [HttpGet]
@@ -68,9 +74,64 @@ namespace StajYonetimSistemi.Controllers
             veritabani.Documents.Add(belge);
             veritabani.SaveChanges();
 
-            // başarı mesajıyla sayfayı tekrar göster
-            ViewBag.Mesaj = "Belge başariyla yüklendi";
-            return View();
+            string uzanti = Path.GetExtension(kaydedilenAd).ToLowerInvariant(); // kaydedilen belge docx ise okuyup kurallara veriyoruz
+            var rapor = new List<string>(); // ekranda göstereceğimiz satırlar
+
+            if (uzanti == ".docx")
+            {
+                try
+                {
+                    BelgeOkuyucu okuyucu = new DocxOkuyucu(); // türü BelgeOkuyucu ama içinde DocxOkuyucu var çok biçimlilik sağlıyor
+                    var alanlar = okuyucu.Oku(Path.Combine(uploadsKlasoru, kaydedilenAd));
+                    var bilgi = ayiklayici.Ayikla(alanlar);
+
+                    string uyruk = bilgi.Uyruk.Replace(".", "").Trim().ToUpper(new CultureInfo("tr-TR")); // uyruğu karşılaştırmaya için noktaları at boşlukları sil büyük harfe çevir 
+
+                    if (uyruk == "")
+                    {
+                        rapor.Add("Kimlik: uyruk belgeden okunamadi, kontrol yapilamadi"); // uyruğu okuyamadıysak hangi kuralın çalışacağını bilemeyiz
+                    }
+                    else
+                    {
+                        Kural kimlikKurali;
+                        if (uyruk == "TC" || uyruk == "TÜRKİYE")
+                        {
+                            kimlikKurali = new TcKimlikDogrulayici();
+                        }
+                        else
+                        {
+                            kimlikKurali = new YabanciKimlikDogrulayici(); // ülke adı yazan herkes yabancı sayılır
+                        }
+
+                        var kimlikSonuc = kimlikKurali.Dogrula(bilgi.TcNo);
+                        rapor.Add("Kimlik: " + (kimlikSonuc.Gecerli ? "geçerli" : kimlikSonuc.Mesaj));
+                }
+
+                    var telefonSonuc = new TelefonDogrulayici().Dogrula(bilgi.Telefon);
+                    rapor.Add("Telefon: " + (telefonSonuc.Gecerli ? "geçerli" : telefonSonuc.Mesaj));
+
+                    var epostaSonuc = new EpostaDogrulayici().Dogrula(bilgi.Eposta);
+                    rapor.Add("E-posta: " + (epostaSonuc.Gecerli ? "geçerli" : epostaSonuc.Mesaj));
+                }
+                catch (Exception)
+                {
+                    // bozuk ya da beklenmeyen bir docx gelirse site çökmesin
+                    rapor.Add("Belge okunamadi, dosya bozuk olabilir");
+                }
+            }
+            else
+            {
+                rapor.Add("Bu formatta otomatik okuma henüz desteklenmiyor");
+            }
+
+            // mesajı ve raporu TempData ile bir sonraki isteğe taşıyoruz 
+            TempData["Mesaj"] = "Belge başariyla yüklendi";
+            TempData["Rapor"] = rapor.ToArray();
+
+            // sayfayı yeniden yönlendiriyoruz böylece F5'e basınca belge ikinci kez yüklenmez
+            return RedirectToAction("Upload");
         }
     }
 }
+
+            
