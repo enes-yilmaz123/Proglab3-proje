@@ -17,6 +17,7 @@
         else if (User.IsInRole("ROLE_STUDENT"))
         {
             <a class="btn btn-primary" asp-controller="Documents" asp-action="Upload">Belge Yükle</a>
+            <a class="btn btn-outline-primary" asp-controller="Documents" asp-action="Index">Belgelerim</a>
         }
         else if (User.IsInRole("ROLE_ADMIN"))
         {

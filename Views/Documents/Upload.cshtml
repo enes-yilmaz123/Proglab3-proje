@@ -3,6 +3,16 @@
     ViewData["Title"] = "Belge Yükle";
 }
 
+@functions {
+    // rapor satırının başına işaret: geçerli ✓, bilgi ℹ, hata ✗ (renge ek olarak işaret ve yazı var)
+    static (string Isaret, string Sinif) Isaretle(string satir)
+    {
+        if (satir.EndsWith("geçerli")) { return ("✓", "text-success"); }
+        if (satir.Contains("okunamadi") || satir.Contains("desteklenmiyor")) { return ("ℹ", "text-muted"); }
+        return ("✗", "text-danger");
+    }
+}
+
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-7">
         <div class="card shadow-sm kimlik-karti belir">
@@ -13,23 +23,34 @@
                     <p class="text-muted mb-0">Staj başvuru formunu sisteme yükle.</p>
                 </div>
 
-                @* controller'dan Mesaj geldiyse "Başarılı" kutusunda göster; renge ek olarak yazıyla da belirtilir *@
+                @* yükleme sonrası: önce "Başarılı" kutusu, altında kontrol sonucu; her satırda renge ek olarak işaret ve yazı var *@
                 @if (TempData["Mesaj"] != null)
                 {
-                    <div class="alert alert-success" role="status">
-                    <strong>Başarılı:</strong> @TempData["Mesaj"]
-                     </div>
-                }
+                    var rapor = (TempData["Rapor"] as IEnumerable<string>)?.ToList() ?? new List<string>();
+                    bool hataVar = rapor.Any(r => !r.EndsWith("geçerli") && !r.Contains("okunamadi") && !r.Contains("desteklenmiyor"));
 
-                @* belge okunduysa kontrol sonuçlarını liste olarak göster *@
-                @if (TempData["Rapor"] is IEnumerable<string> rapor)
-                {
-                    <ul class="list-group mb-3">
-                    @foreach (string satir in rapor)
+                    <div class="alert alert-success" role="status">
+                        <strong>Başarılı:</strong> @TempData["Mesaj"].
+                        <a class="alert-link" asp-controller="Documents" asp-action="Index">Belgelerim'e git</a>
+                    </div>
+
+                    @if (rapor.Any())
                     {
-                        <li class="list-group-item">@satir</li>
+                        <div class="card mb-3">
+                            <div class="card-header fw-semibold">Kontrol sonucu</div>
+                            <ul class="list-group list-group-flush">
+                                @foreach (var satir in rapor)
+                                {
+                                    var isaret = Isaretle(satir);
+                                    <li class="list-group-item"><span class="@isaret.Sinif fw-bold me-2" aria-hidden="true">@isaret.Isaret</span>@satir</li>
+                                }
+                            </ul>
+                            @if (hataVar)
+                            {
+                                <div class="card-footer small text-muted">Hatalı alanı düzeltip belgeyi yeniden yükleyebilirsin.</div>
+                            }
+                        </div>
                     }
-                    </ul>
                 }
 
                 @* controller'ın ModelState.AddModelError ile eklediği hatalar varsa "Hata" kutusunda göster *@
@@ -69,7 +90,7 @@
                     </div>
 
                     @* seçilen dosyanın kartı: dosya seçilince görünür, "Kaldır" ile geri alınır *@
-                     <div class="secilen-dosya gap-3 mb-3" id="secilenKart" aria-live="polite" hidden>
+                    <div class="secilen-dosya gap-3 mb-3" id="secilenKart" aria-live="polite" hidden>
                         <div class="flex-grow-1 text-truncate">
                             <div class="fw-semibold text-truncate" id="secilenAd"></div>
                             <div class="small text-muted" id="secilenBoyut"></div>
