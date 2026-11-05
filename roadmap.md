@@ -17,6 +17,12 @@
 15. authcontroller içine post metodlarını çalıştıran fonksiyonlar yazıldı (login ve log out)
 16. controller metodlarında yetkilendirme eklendi 
 17. register sayfası için view model sınıfı oluşturuldu ve gereken bilgiler için form açıldı
+18. document modelindeki eksik bilgiler tamamlandı ve migration alındı
+19. register formuna e-posta format kontrolü eklendi
+20. register formuna şifre kuralları eklendi
+21. isim ve soyisim alanlarına sadece harf kabul eden ve başında ya da sonunda boşluğa izin vermeyen regex eklendi
+22. kayıt olan kullanıcı için register sonunda cookie oluşturuldu, kullanıcı tekrar giriş yapmadan ana sayfaya yönlendiriliyor
+23. AdminController eklendi, sadece ROLE_ADMIN rolü erişebiliyor
 
 **Öğrenci 2 (evrak doğrulama) HARUN BOZKURT**
 

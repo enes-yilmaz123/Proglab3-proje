@@ -105,9 +105,14 @@ namespace StajYonetimSistemi.Controllers
             //cookie yi oluşturuyoruz async kullanmamızın sebebi burada await kullanmak zorunda olduğumuz için işlemi bitirmeden devam edilebilmesini sağlıyor
             //bu satır çalışınca tarayıcıya bir cookie gider ve her istekte tekrar tekerar o gönderilir
 
-            return RedirectToAction("Index", "Home"); 
-            // giriş yapılınca ana sayfaya gönder
+            if (user is Admin) //giriş yapan admin hesabı ise driekt olarak admin sayfasına atar
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+            return RedirectToAction("Index", "Home");
         }
+
+
         [Authorize]//giriş yapmamış kullanıcıların logout metodunu çalıştırmaması lazım
         [HttpPost]// çıkış yapılınca cookie yi göndermeyi bırakır
         public async Task<IActionResult> Logout()
