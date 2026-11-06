@@ -1,6 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+@* sayfanın sekmede görünen başlığı *@
+@{
+    ViewData["Title"] = "Gizlilik ve Veri Kullanımı";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm kimlik-karti belir">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-1">Gizlilik ve Veri Kullanımı</h1>
+                <p class="text-muted">Bu sistemde hangi bilgilerin tutulduğunu, neden tutulduğunu ve kimlerin görebildiğini buradan öğrenebilirsin.</p>
+
+                <h2 class="h5 mt-4">Hangi bilgiler tutulur?</h2>
+                <ul>
+                    <li><strong>Hesap bilgilerin:</strong> ad, soyad, öğrenci numarası ve e-posta adresin. Şifren düz yazı olarak değil, geri döndürülemeyen bir özet (SHA-256) olarak saklanır.</li>
+                    <li><strong>Yönetici veri setine eklediyse:</strong> veri setindeki kimlik, doğum tarihi, adres, bölüm ve telefon gibi bilgilerin.</li>
+                    <li><strong>Yüklediğin belgeler:</strong> dosyanın kendisi, özgün adı, yükleme tarihi, durumu ve kontrol sonucu.</li>
+                    <li><strong>Giriş denemeleri:</strong> denenen e-posta, deneme zamanı ve girişin başarılı olup olmadığı.</li>
+                </ul>
+
+                <h2 class="h5 mt-4">Bu bilgiler ne için kullanılır?</h2>
+                <ul>
+                    <li>Ek-16 belgeni kontrol etmek ve sonucunu sana göstermek.</li>
+                    <li>Belgedeki bilgileri hesabındaki bilgilerle karşılaştırmak.</li>
+                    <li>Hesabını korumak: üst üste 5 yanlış şifre denemesinden sonra hesap kilitlenir.</li>
+                </ul>
+
+                <h2 class="h5 mt-4">Bilgilerini kimler görebilir?</h2>
+                <ul>
+                    <li>Sen sadece kendi belgelerini ve kontrol sonuçlarını görürsün.</li>
+                    <li>Yönetici; öğrenci listesini, tüm başvuruları ve kontrol sonuçlarını görür.</li>
+                    <li>Bilgilerin bu uygulamanın dışındaki bir servise otomatik olarak gönderilmez.</li>
+                </ul>
+
+                <p class="small text-muted border-top pt-3 mb-4">Bu sayfa Proglab III dersi proje çalışması kapsamında hazırlanmış bir bilgilendirmedir. Resmî bir kişisel verilerin korunması (KVKK) aydınlatma metni yerine geçmez.</p>
+
+                <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Ana sayfaya dön</a>
+            </div>
+        </div>
+    </div>
+</div>
