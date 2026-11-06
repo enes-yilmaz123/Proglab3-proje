@@ -65,9 +65,10 @@
                                    aria-current="@(Burada("Students", "Index") ? "page" : null)"
                                    asp-controller="Students" asp-action="Index">Öğrenciler</a>
                             </li>
-                            @* yönetici belge yükleyemez: seçenek gizlenmez, soluk gösterilir *@
-                            <li class="nav-item">
-                                <span class="nav-link disabled" aria-disabled="true" title="Belge yükleme sadece öğrenciler içindir">Belge Yükle</span>
+                          <li class="nav-item">
+                                <a class="nav-link text-dark @(Burada("Admin", "VeriSeti") ? "fw-semibold" : "")"
+                                   aria-current="@(Burada("Admin", "VeriSeti") ? "page" : null)"
+                                   asp-controller="Admin" asp-action="VeriSeti">Veri Seti</a>
                             </li>
                         }
                     </ul>
