@@ -102,5 +102,20 @@ namespace StajYonetimSistemi.Controllers
 
             return RedirectToAction("Basvurular"); // listeye geri dön
         }
+        
+        [HttpPost] // silme formu gönderilince çalışır
+        public IActionResult Sil(int id)
+        {
+            var belge = _context.Documents.FirstOrDefault(d => d.id == id); // belgeyi id ile bul
+            if (belge == null)
+            {
+                return NotFound(); // böyle bir belge yoksa 404 döndür
+            }
+
+            _context.Documents.Remove(belge); // belgeyi silinecekler arasına işaretler
+            _context.SaveChanges(); // veri tabanından gerçekten siler
+
+            return RedirectToAction("Basvurular"); // listeye geri dön
+        }
     }
 }
