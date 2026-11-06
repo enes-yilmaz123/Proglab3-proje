@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using StajYonetimSistemi.Data;
 using StajYonetimSistemi.Models;
 using StajYonetimSistemi.ViewModels;
+using StajYonetimSistemi.Services;
 
 namespace StajYonetimSistemi.Controllers
 {
@@ -10,10 +11,12 @@ namespace StajYonetimSistemi.Controllers
     public class AdminController : Controller
     {
         private readonly StajDbContext _context; // veri tabanına erişim için
-        public AdminController(StajDbContext context) // program cs deki kuralları controlerı oluturuken atııyor
+        private readonly VeriSetiAktarici _aktarici; // csv veri setini okuyup öğrencileri kaydeden servis
+        public AdminController(StajDbContext context, VeriSetiAktarici aktarici) // program cs deki kuralları controlerı oluturuken atııyor
         {
             _context = context;
-        }
+            _aktarici = aktarici;
+        }        
         public IActionResult Index()
         {
             var ozet = new AdminOzetViewModel // tablodaki sutun sayılarını çeker tek tek öğrencileri çekip saymaz
@@ -102,7 +105,7 @@ namespace StajYonetimSistemi.Controllers
 
             return RedirectToAction("Basvurular"); // listeye geri dön
         }
-        
+
         [HttpPost] // silme formu gönderilince çalışır
         public IActionResult Sil(int id)
         {
