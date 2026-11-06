@@ -87,5 +87,20 @@ namespace StajYonetimSistemi.Controllers
         {
             return View();
         }
+
+        [HttpPost] // durum değiştirme formu gönderilince çalışır
+        public IActionResult DurumDegistir(int id, DocumentStatus yeniDurum) // değişecek olan belggenin id si ve yeni durum girdi olarak girilir
+        {
+            var belge = _context.Documents.FirstOrDefault(d => d.id == id); // belgeyi id ile bul
+            if (belge == null)
+            {
+                return NotFound(); // böyle bir belge yoksa 404 döndür
+            }
+
+            belge.Status = yeniDurum;
+            _context.SaveChanges(); // değişikliği veri tabanına yazar
+
+            return RedirectToAction("Basvurular"); // listeye geri dön
+        }
     }
 }

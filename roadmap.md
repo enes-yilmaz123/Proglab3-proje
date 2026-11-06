@@ -23,6 +23,14 @@
 21. isim ve soyisim alanlarına sadece harf kabul eden ve başında ya da sonunda boşluğa izin vermeyen regex eklendi
 22. kayıt olan kullanıcı için register sonunda cookie oluşturuldu, kullanıcı tekrar giriş yapmadan ana sayfaya yönlendiriliyor
 23. AdminController eklendi, sadece ROLE_ADMIN rolü erişebiliyor
+24. giriş yapan kullanıcı admin ise admin sayfasına, öğrenci ise ana sayfaya yönlendiriliyor
+25. veri tabanı herkesin bilgisayarında ayrı olduğu için Program.cs e açılışta migration uygulayan ve hiç admin yoksa varsayılan bir admin hesabı oluşturan kod eklendi
+26. admin özet sayfasındaki sayıları taşıyan AdminOzetViewModel yazıldı, AdminController daki Index metodu öğrenci ve belge sayılarını veri tabanında Count ile sayıp sayfaya gönderiyor
+27. başvuru listesi için BasvuruSatiriViewModel ve BasvurularViewModel yazıldı, durumun Türkçe yazısı ve rengi switch ifadesiyle hesaplanıyor
+28. Basvurular metodu yazıldı, belgeler duruma göre sekmeden ve öğrenci adı, soyadı ya da numarasına göre arama kutusundan filtreleniyor, belge ile öğrenci StudentId üzerinden eşleştirilip yükleme tarihine göre yeniden eskiye sıralanıyor
+29. veri seti yükleme sayfasını açan VeriSeti metodu eklendi, içe aktarma sonraya bırakıldı
+30. Document modeline doğrulama raporunu tutan Rapor alanı eklendi ve migration alındı
+31. başvuru listesindeki her satıra Rapor alanı eklendi, AdminController belgenin raporunu satıra dolduruyor admin hatalı belgenin sebebini görebilecek
 
 **Öğrenci 2 (evrak doğrulama) HARUN BOZKURT**
 
