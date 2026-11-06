@@ -17,6 +17,16 @@
         ("Onaylandı", DocumentStatus.Onaylandi),
         ("Tamamlandı", DocumentStatus.Tamamlandi)
     };
+
+    // durum değiştirme listesindeki seçenekler
+    var durumlar = new (string Ad, DocumentStatus Durum)[]
+    {
+        ("Yüklendi", DocumentStatus.Yuklendi),
+        ("İnceleniyor", DocumentStatus.Inceleniyor),
+        ("Hatalı / Eksik", DocumentStatus.HataliEksik),
+        ("Onaylandı", DocumentStatus.Onaylandi),
+        ("Tamamlandı", DocumentStatus.Tamamlandi)
+    };
 }
 
 @functions {
@@ -29,6 +39,18 @@
         DocumentStatus.Tamamlandi => "text-bg-success",
         _ => "text-bg-secondary"
     };
+
+    // rapor yazısını satırlara böler; boş raporda boş liste döner
+    static string[] RaporSatirlari(string rapor) =>
+        rapor.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    // rapor satırının başına işaret: geçerli ✓, bilgi ℹ, hata ✗ (renge ek olarak işaret ve yazı var)
+    static (string Isaret, string Sinif) Isaretle(string satir)
+    {
+        if (satir.EndsWith("geçerli")) { return ("✓", "text-success"); }
+        if (satir.Contains("okunamadi") || satir.Contains("desteklenmiyor")) { return ("ℹ", "text-muted"); }
+        return ("✗", "text-danger");
+    }
 }
 
 <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3 belir">
@@ -78,14 +100,15 @@
 <div class="card shadow-sm belir belir-1">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
-            <caption class="visually-hidden">Yüklenen belgelerin öğrenci, dosya, tarih ve durum listesi</caption>
+            <caption class="visually-hidden">Yüklenen belgelerin öğrenci, dosya, tarih, durum, kontrol sonucu ve işlem listesi</caption>
             <thead class="table-light">
                 <tr>
                     <th scope="col">Öğrenci</th>
-                    <th scope="col">Öğrenci No</th>
                     <th scope="col">Dosya</th>
                     <th scope="col">Yükleme tarihi</th>
                     <th scope="col">Durum</th>
+                    <th scope="col">Kontrol sonucu</th>
+                    <th scope="col">İşlemler</th>
                 </tr>
             </thead>
             <tbody>
@@ -93,12 +116,51 @@
                 {
                     foreach (var satir in Model.Satirlar)
                     {
+                        var raporSatirlari = RaporSatirlari(satir.Rapor);
                         <tr>
-                            <td>@satir.OgrenciAdSoyad</td>
-                            <td>@satir.OgrenciNo</td>
+                            <td>
+                                @satir.OgrenciAdSoyad
+                                <div class="small text-muted">@satir.OgrenciNo</div>
+                            </td>
                             <td class="text-break">@satir.DosyaAdi</td>
                             <td>@satir.YuklemeTarihi.ToString("g", tr)</td>
                             <td><span class="badge @Rozet(satir.Durum)">@satir.DurumMetni</span></td>
+                            <td>
+                                @if (raporSatirlari.Length == 0)
+                                {
+                                    <span class="text-muted">Rapor yok</span>
+                                }
+                                else
+                                {
+                                    <details>
+                                        <summary>Sonucu göster</summary>
+                                        <ul class="list-unstyled small mt-2 mb-0">
+                                            @foreach (var rs in raporSatirlari)
+                                            {
+                                                var isaret = Isaretle(rs);
+                                                <li><span class="@isaret.Sinif" aria-hidden="true">@isaret.Isaret</span> @rs</li>
+                                            }
+                                        </ul>
+                                    </details>
+                                }
+                            </td>
+                            <td>
+                                @* durum değiştirme: seçili durum şu anki durumdur; "Güncelle" ile kaydedilir *@
+                                <form method="post" asp-action="DurumDegistir" class="d-flex gap-1 mb-1">
+                                    <input type="hidden" name="id" value="@satir.Id" />
+                                    <label for="durum-@satir.Id" class="visually-hidden">@satir.DosyaAdi için yeni durum</label>
+                                    <select class="form-select form-select-sm" id="durum-@satir.Id" name="yeniDurum">
+                                        @foreach (var d in durumlar)
+                                        {
+                                            <option value="@d.Durum" selected="@(d.Durum == satir.Durum)">@d.Ad</option>
+                                        }
+                                    </select>
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Güncelle</button>
+                                </form>
+                                <button type="button" class="btn btn-outline-danger btn-sm"
+                                        data-bs-toggle="modal" data-bs-target="#silModal"
+                                        data-belge-id="@satir.Id" data-belge-ad="@satir.DosyaAdi">Sil</button>
+                            </td>
                         </tr>
                     }
                 }
@@ -106,7 +168,7 @@
                 {
                     @* boş liste: neden boş olduğunu söyler *@
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">
+                        <td colspan="6" class="text-center text-muted py-4">
                             @if (!string.IsNullOrWhiteSpace(Model.Arama))
                             {
                                 <text>"@Model.Arama" için sonuç bulunamadı. Başka bir ad ya da numara dene.</text>
@@ -126,3 +188,38 @@
 <div class="mt-3">
     <a class="btn btn-outline-secondary" asp-action="Index">Yönetim Paneli</a>
 </div>
+
+@* silme onayı: geri alınamayan işlem olduğu için bir kez sorulur; tek pencere, bilgiler tıklanan satırdan gelir *@
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silBaslik" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" asp-action="Sil">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="silBaslik">Belgeyi sil</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="silBelgeId" />
+                    <p class="mb-1"><strong id="silBelgeAd"></strong> belgesi silinecek.</p>
+                    <p class="text-muted small mb-0">Bu işlem geri alınamaz.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // modal açılırken, tıklanan satırın belge numarası ve adı pencereye yazılır
+        var silModal = document.getElementById("silModal");
+        silModal.addEventListener("show.bs.modal", function (olay) {
+            var dugme = olay.relatedTarget;
+            document.getElementById("silBelgeId").value = dugme.getAttribute("data-belge-id");
+            document.getElementById("silBelgeAd").textContent = dugme.getAttribute("data-belge-ad");
+        });
+    </script>
+}
