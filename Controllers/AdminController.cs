@@ -67,7 +67,8 @@ namespace StajYonetimSistemi.Controllers
                     OgrenciNo = ogrenci.StudentNumber,
                     DosyaAdi = belge.OriginalFileName,
                     YuklemeTarihi = belge.UploadDate,
-                    Durum = belge.Status
+                    Durum = belge.Status,
+                    Rapor = belge.Rapor
                 });
             }
 
