@@ -86,9 +86,30 @@ namespace StajYonetimSistemi.Controllers
         }
 
         // veri seti yükleme sayfası şimdilik sadece arayüz
+        [HttpGet] // iki tane metod olucağı için bunu sadece sayfa girişlerinde vericek 
         public IActionResult VeriSeti()
         {
             return View();
+        }
+
+        [HttpPost] // veri seti formu gönderilince çalışır dosyanın uygun olup oladığına bakar
+        public IActionResult VeriSeti(IFormFile? dosya)
+        {
+            if (dosya == null || dosya.Length == 0) // dosya seçilmemişse ya da boşsa uyar
+            {
+                TempData["Hata"] = "Lütfen bir dosya seçin";
+                return RedirectToAction("VeriSeti");
+            }
+
+            if (Path.GetExtension(dosya.FileName).ToLower() != ".csv") // dosya uzantıları kontrol edilir ve sadece csv kabul edilir
+            {
+                TempData["Hata"] = "Sadece .csv dosyası yüklenebilir";
+                return RedirectToAction("VeriSeti");
+            }
+
+            using var akis = dosya.OpenReadStream(); // dosyanın içeriğini okunabilir hale getirir
+            TempData["Mesaj"] = _aktarici.Aktar(akis); // servis satırları kaydedip sonuç mesajını döndürür
+            return RedirectToAction("VeriSeti"); // dosyanın iki kere kaydedilmesini önlemek için direkt olrak get olarak açar
         }
 
         [HttpPost] // durum değiştirme formu gönderilince çalışır
