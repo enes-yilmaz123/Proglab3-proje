@@ -38,7 +38,7 @@ body {
   padding-left: 0;
 }
 
-/* dokunma hedefi: normal butonlar en az 44 piksel yüksekliğinde (WCAG 2.5.5, Apple önerisi) */
+/* dokunma hedefi: normal butonlar en az 44 piksel yüksekliğinde, dokunmatik ekranda basması kolay olsun */
 .btn:not(.btn-sm) {
   min-height: 2.75rem;
 }
@@ -171,8 +171,50 @@ body {
   display: none;
 }
 
+/* kullanıcı menüsündeki yuvarlak avatar: e-postanın ilk harfi (beyaz yazı koyu yeşil üstünde okunur) */
+.kullanici-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--kou-yesil);
+  color: #fff;
+  font-weight: 600;
+  transition: box-shadow 0.2s ease;
+}
+
+.nav-link:hover .kullanici-avatar,
+.nav-link:focus-visible .kullanici-avatar,
+.nav-link.show .kullanici-avatar {
+  box-shadow: 0 0 0 0.2rem rgba(6, 125, 59, 0.25);
+}
+
+/* menü bağlantılarının altına hover'da yeşil çizgi çizilir */
+.navbar .nav-link:not(.dropdown-toggle):not(.disabled) {
+  background-image: linear-gradient(var(--kou-yesil), var(--kou-yesil));
+  background-repeat: no-repeat;
+  background-position: left bottom 0.35rem;
+  background-size: 0 2px;
+  transition: background-size 0.2s ease;
+}
+
+.navbar .nav-link:not(.dropdown-toggle):not(.disabled):hover,
+.navbar .nav-link:not(.dropdown-toggle):not(.disabled):focus-visible {
+  background-size: 100% 2px;
+}
+
+/* mesaj ve hata kutuları ekrana hafifçe belirir */
+.alert {
+  animation: belir 0.35s ease-out both;
+}
+
 /* hareketi azaltmak isteyen kullanıcıda animasyonlar kapanır */
 @media (prefers-reduced-motion: reduce) {
+  .alert { animation: none; }
+  .kullanici-avatar { transition: none; }
+  .navbar .nav-link { transition: none; }
   .belir { animation: none; }
   .adim-karti { transition: none; }
   .adim-karti:hover { transform: none; }
