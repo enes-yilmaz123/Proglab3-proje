@@ -4,29 +4,118 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm kimlik-karti belir">
+    <div class="col-lg-9">
+        <div class="mb-4 belir">
+            <h1 class="h3 mb-1">Veri Seti</h1>
+            <p class="text-muted mb-0">Öğrenci veri setini CSV dosyası olarak yükle. Öğrenciler sisteme eklenir.</p>
+        </div>
+
+        @* içe aktarma sonucu: başarıda "Başarılı", hatada "Hata" kutusu; renge ek olarak yazıyla da belirtilir *@
+        @if (TempData["Mesaj"] != null)
+        {
+            <div class="alert alert-success" role="status">
+                <strong>Başarılı:</strong> @TempData["Mesaj"]. <a class="alert-link" asp-action="Index" asp-controller="Students">Öğrenci listesine git</a>
+            </div>
+        }
+        @if (TempData["Hata"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                <strong>Hata:</strong> @TempData["Hata"]
+            </div>
+        }
+
+        @* tarayıcıda anında çıkan hata (CSV olmayan dosya); sunucu yine de kontrol eder *@
+        <div id="istemciHata" class="alert alert-danger" role="alert" hidden></div>
+
+        <div class="card shadow-sm kimlik-karti mb-4 belir belir-1">
             <div class="card-body p-4">
-                <div class="mb-3">
-                    <h1 class="h3 mb-1">Veri Seti</h1>
-                    <p class="text-muted mb-0">Kontrol için kullanılan veri setini buradan yükleyeceksin.</p>
+                <h2 class="h5 mb-3">Dosya yükle</h2>
+
+                @* name="dosya": controller'daki IFormFile dosya parametresiyle aynı olmalı; enctype dosya göndermek için şart *@
+                <form method="post" enctype="multipart/form-data" id="veriSetiFormu">
+                    <div class="mb-3">
+                        <label for="dosya" class="form-label">CSV dosyası</label>
+                        <input type="file" class="form-control" id="dosya" name="dosya" accept=".csv" aria-describedby="dosyaYardim" />
+                        <div id="dosyaYardim" class="form-text">Sadece .csv dosyası kabul edilir. Sütunlar noktalı virgülle (;) ayrılmalı.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a class="btn btn-outline-secondary" asp-action="Index">İptal</a>
+                        <button type="submit" class="btn btn-primary" id="yukleDugmesi">Veri setini yükle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm belir belir-2">
+            <div class="card-body p-4">
+                <h2 class="h5 mb-1">Dosya biçimi</h2>
+                <p class="text-muted small mb-3">İlk satır başlık satırıdır. Her öğrenci için aşağıdaki 12 sütun bu sırayla olmalı.</p>
+
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-3">
+                        <caption class="visually-hidden">CSV dosyasındaki sütunlar, sırası ve örnek değerleri</caption>
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Sıra</th>
+                                <th scope="col">Sütun</th>
+                                <th scope="col">Örnek</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>AdSoyad</td><td>Ali Yılmaz</td></tr>
+                            <tr><td>2</td><td>TcKimlikNo</td><td>10000000146</td></tr>
+                            <tr><td>3</td><td>Uyruk</td><td>T.C.</td></tr>
+                            <tr><td>4</td><td>OgrenciNo</td><td>230101001</td></tr>
+                            <tr><td>5</td><td>DogumTarihi</td><td>15.03.2003 (gg.aa.yyyy)</td></tr>
+                            <tr><td>6</td><td>Adres</td><td>Kocaeli İzmit Örnek Mah.</td></tr>
+                            <tr><td>7</td><td>Bolum</td><td>Bilgisayar Mühendisliği</td></tr>
+                            <tr><td>8</td><td>Ek16TeslimYili</td><td>2026</td></tr>
+                            <tr><td>9</td><td>OncekiStajGunu</td><td>0</td></tr>
+                            <tr><td>10</td><td>Eposta</td><td>ali.ornek@test.com</td></tr>
+                            <tr><td>11</td><td>Telefon</td><td>+90 555 111 22 33</td></tr>
+                            <tr><td>12</td><td>SaglikYardimi</td><td>Evet ya da Hayır</td></tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="alert alert-light border" role="note">
-                    <strong>Bilgi:</strong> Bu özellik henüz hazır değil. Hazır olunca buradan dosya yükleyebileceksin.
-                </div>
-
-                @* şimdilik çalışmıyor: gizlenmez, soluk gösterilir *@
-                <div class="mb-3">
-                    <label for="veriSetiDosya" class="form-label">Veri seti dosyası</label>
-                    <input type="file" class="form-control" id="veriSetiDosya" disabled />
-                </div>
-
-                <div class="d-flex justify-content-end gap-2">
-                    <a class="btn btn-outline-secondary" asp-action="Index">Yönetim Paneli</a>
-                    <button type="button" class="btn btn-primary" disabled>Yükle</button>
-                </div>
+                <ul class="small text-muted mb-0">
+                    <li>E-postası ya da öğrenci numarası sistemde zaten olan satırlar atlanır.</li>
+                    <li>Tarihi ya da gün sayısı hatalı olan satırlar atlanır. Sonuç mesajında kaç satırın atlandığı yazar.</li>
+                    <li>Yüklenen öğrenciler kayıt sayfasından e-posta ve öğrenci numaralarıyla şifre belirleyerek hesaplarını alır.</li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        var form = document.getElementById("veriSetiFormu");
+        var girdi = document.getElementById("dosya");
+        var hata = document.getElementById("istemciHata");
+        var dugme = document.getElementById("yukleDugmesi");
+
+        // seçilen dosya .csv değilse hemen uyarır ve butonu kilitler
+        girdi.addEventListener("change", function () {
+            hata.hidden = true;
+            hata.textContent = "";
+            dugme.disabled = false;
+
+            if (girdi.files.length === 0) { return; }
+
+            var ad = girdi.files[0].name.toLowerCase();
+            if (!ad.endsWith(".csv")) {
+                hata.textContent = "Hata: Sadece .csv dosyası yüklenebilir. Dosyayı Excel'den CSV olarak kaydedip tekrar dene.";
+                hata.hidden = false;
+                dugme.disabled = true;
+            }
+        });
+
+        // anında geri bildirim: gönderilirken buton kilitlenir ve "Yükleniyor…" yazar
+        form.addEventListener("submit", function () {
+            dugme.disabled = true;
+            dugme.textContent = "Yükleniyor…";
+        });
+    </script>
+}
