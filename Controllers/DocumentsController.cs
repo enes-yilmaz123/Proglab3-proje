@@ -61,6 +61,53 @@ namespace StajYonetimSistemi.Controllers
             return View(new BelgelerimViewModel { Belgeler = belgeler });
         }
 
+        [HttpPost]
+        // öğrencinin kendi belgesini silmesini sağlar, tamamlanmış belgeyi silemez
+        public IActionResult Sil(int id)
+        {
+            // giriş yapan kullanıcının e-postasını al, yoksa boş yazı olsun
+            string email = User.Identity?.Name ?? "";
+
+            // e-postaya göre öğrenciyi bul
+            var ogrenci = veritabani.Students.FirstOrDefault(s => s.Email == email);
+            if (ogrenci == null)
+            {
+                return RedirectToAction("Upload"); // öğrenci kaydı yoksa silecek belge de yok
+            }
+
+            // belge hem bu id'ye hem bu öğrenciye ait olmalı, başkasının belgesini silemesin
+            var belge = veritabani.Documents
+                .FirstOrDefault(d => d.id == id && d.StudentId == ogrenci.id);
+
+            // böyle bir belge yoksa mesaj verip listeye dön
+            if (belge == null)
+            {
+                TempData["Mesaj"] = "Belge bulunamadı.";
+                return RedirectToAction("Index");
+            }
+
+            // Tamamlandı kilidi: öğrenci tamamlanmış belgeyi silemez, sadece admin silebilir
+            if (belge.Status == DocumentStatus.Tamamlandi)
+            {
+                TempData["Mesaj"] = "Tamamlanmış belge silinemez.";
+                return RedirectToAction("Index");
+            }
+
+            // önce diskteki dosyayı sil (dosya yoksa hata vermesin diye önce kontrol ediyoruz)
+            if (System.IO.File.Exists(belge.StoredPath))
+            {
+                System.IO.File.Delete(belge.StoredPath);
+            }
+
+            // sonra veritabanındaki kaydı sil ve değişikliği kaydet
+            veritabani.Documents.Remove(belge);
+            veritabani.SaveChanges();
+
+            // silindi mesajını bırakıp listeye geri dön (yenileyince tekrar silmesin diye redirect)
+            TempData["Mesaj"] = "Belge silindi.";
+            return RedirectToAction("Index");
+        }
+
         [HttpGet]
         // Yükleme sayfasını gösterir
         public IActionResult Upload()
