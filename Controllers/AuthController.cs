@@ -140,25 +140,43 @@ namespace StajYonetimSistemi.Controllers
                 return View(formInfo);
             }
 
-            // aynı e-posta ile kayıt var mı
-            bool emailVarMi = _context.Users.Any(u => u.Email == formInfo.Email);
-            if (emailVarMi) // eğerki data base de aynı epostadan başka varsa hatalı formu tekrar gönderir ve hata mesajı fırlatır
+            // admin veri seti yüklediyse öğrenci satırı tabloda zaten var ama şifresi boş
+            // eposta ve öğrenci numarası formdakiyle aynı olan şifresi boş satırı arıyoruz
+            var veriSetiOgrencisi = _context.Students.FirstOrDefault(s =>
+                s.Email == formInfo.Email &&
+                s.StudentNumber == formInfo.StudentNumber &&
+                s.Password == "");
+
+            Student student; // iki yoldan da dolacak aşağıda cookie için kullanıyoruz
+
+            if (veriSetiOgrencisi != null)
             {
-                ModelState.AddModelError("", "Bu e-posta ile zaten bir hesap var");
-                return View(formInfo);
+                // satır var yeni satır eklemiyoruz sadece şifresini yazıyoruz
+                veriSetiOgrencisi.Password = _passwordService.Hash(formInfo.Password);
+                student = veriSetiOgrencisi;
+            }
+            else
+            {
+                // veri setinde yok ya da bilgiler uyuşmuyor aynı eposta ile kayıt var mı
+                if (_context.Users.Any(u => u.Email == formInfo.Email))
+                {
+                    ModelState.AddModelError("", "Bu e-posta ile zaten bir hesap var");
+                    return View(formInfo);
+                }
+
+                student = new Student //sıfırdan kayıt olma
+                {
+                    FirstName = formInfo.FirstName,
+                    LastName = formInfo.LastName,
+                    StudentNumber = formInfo.StudentNumber,
+                    Email = formInfo.Email,
+                    Password = _passwordService.Hash(formInfo.Password) // şifreyi direkt yüklemek yerine hashleyip gönderiyoruz
+                };
+
+                _context.Students.Add(student);
             }
 
-            var student = new Student  //data baseye göndermek için controller içine atıyoruz bunun içinde önce boş bir nesne oluşturuyoruz
-            {
-                FirstName = formInfo.FirstName,
-                LastName = formInfo.LastName,
-                StudentNumber = formInfo.StudentNumber,
-                Email = formInfo.Email,
-                Password = _passwordService.Hash(formInfo.Password) // şifreyi direkt yüklemek yerine  hasleyip gönderiyoruz
-            };
-
-            _context.Students.Add(student); /// buda databaseye eklemesi için controllıra verdiğimiz kod sonrada yenileyip data baseye kaydediyoruz
-            _context.SaveChanges();
+            _context.SaveChanges(); // yeni öğrenciyi ekler ya da var olan satırın şifresini günceller
         
             var claims = new List<Claim>
             {
