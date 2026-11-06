@@ -65,7 +65,7 @@
                                    aria-current="@(Burada("Students", "Index") ? "page" : null)"
                                    asp-controller="Students" asp-action="Index">Öğrenciler</a>
                             </li>
-                          <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link text-dark @(Burada("Admin", "VeriSeti") ? "fw-semibold" : "")"
                                    aria-current="@(Burada("Admin", "VeriSeti") ? "page" : null)"
                                    asp-controller="Admin" asp-action="VeriSeti">Veri Seti</a>
@@ -75,13 +75,39 @@
                     <ul class="navbar-nav">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li class="nav-item">
-                                <span class="navbar-text me-3">@User.Identity.Name</span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Auth" asp-action="Logout" method="post">
-                                    <button type="submit" class="btn btn-outline-secondary btn-sm">Çıkış</button>
-                                </form>
+                            var eposta = User.Identity.Name ?? "";
+                            var harf = eposta.Length > 0 ? eposta.Substring(0, 1).ToUpper(new System.Globalization.CultureInfo("tr-TR")) : "?";
+                            var rolYazisi = User.IsInRole("ROLE_ADMIN") ? "Yönetici" : "Öğrenci";
+
+                            @* kullanıcı menüsü: avatarda e-postanın ilk harfi, açılınca e-posta, rol ve kısayollar *@
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="kullaniciMenusu" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false" aria-label="Kullanıcı menüsü, @eposta">
+                                    <span class="kullanici-avatar" aria-hidden="true">@harf</span>
+                                    <span class="d-none d-lg-inline">@rolYazisi</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="kullaniciMenusu">
+                                    <li>
+                                        <div class="dropdown-item-text">
+                                            <div class="fw-semibold text-break">@eposta</div>
+                                            <div class="small text-muted">@rolYazisi</div>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    @if (User.IsInRole("ROLE_ADMIN"))
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Yönetim Paneli</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="Documents" asp-action="Index">Belgelerim</a></li>
+                                    }
+                                    <li>
+                                        <form asp-controller="Auth" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item">Çıkış</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
                         }
                         else
