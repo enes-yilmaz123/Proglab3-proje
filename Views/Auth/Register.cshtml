@@ -22,6 +22,12 @@
                     </div>
                 }
 
+                @* veri setine eklenmiş öğrenciler için bilgi: e-posta ve öğrenci numarası eşleşirse hesap o kayıtla birleşir *@
+                <div class="alert alert-light border small" role="note">
+                    <strong>Bilgi:</strong> Yönetici seni veri setine eklediyse e-posta ve öğrenci numaran veri setindekiyle aynı olmalı.
+                    Aynıysa hesabın o kayıtla eşleşir ve sadece şifreni belirlersin. Eşleşmezse "Bu e-posta ile zaten bir hesap var" hatası alabilirsin, bilgilerini kontrol et.
+                </div>
+
                 <form asp-controller="Auth" asp-action="Register" method="post">
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
