@@ -36,16 +36,26 @@
     <a class="btn btn-primary" asp-controller="Documents" asp-action="Upload">Belge Yükle</a>
 </div>
 
+@* silme sonrası controller'ın bıraktığı mesaj: silindiyse "Başarılı", silinemediyse "Uyarı"; renge ek olarak yazı da var *@
+@if (TempData["Mesaj"] is string mesaj)
+{
+    var silindi = mesaj == "Belge silindi.";
+    <div class="alert @(silindi ? "alert-success" : "alert-warning")" role="status">
+        <strong>@(silindi ? "Başarılı:" : "Uyarı:")</strong> @mesaj
+    </div>
+}
+
 <div class="card shadow-sm belir belir-1">
     <div class="table-responsive">
         <table class="table align-middle mb-0">
-            <caption class="visually-hidden">Yüklediğin belgelerin dosya, tarih, durum ve kontrol sonucu listesi</caption>
+            <caption class="visually-hidden">Yüklediğin belgelerin dosya, tarih, durum, kontrol sonucu ve işlem listesi</caption>
             <thead class="table-light">
                 <tr>
                     <th scope="col">Dosya</th>
                     <th scope="col">Yükleme tarihi</th>
                     <th scope="col">Durum</th>
                     <th scope="col">Kontrol sonucu</th>
+                    <th scope="col">İşlem</th>
                 </tr>
             </thead>
             <tbody>
@@ -80,6 +90,20 @@
                                     </details>
                                 }
                             </td>
+                            <td>
+                                @if (belge.Durum == DocumentStatus.Tamamlandi)
+                                {
+                                    @* tamamlanmış belge silinemez: buton gizlenmez, soluk gösterilir ve nedeni yazılır *@
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" disabled>Sil</button>
+                                    <div class="small text-muted mt-1">Tamamlandı, silinemez</div>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                            data-bs-toggle="modal" data-bs-target="#silModal"
+                                            data-belge-id="@belge.Id" data-belge-ad="@belge.DosyaAdi">Sil</button>
+                                }
+                            </td>
                         </tr>
                     }
                 }
@@ -87,7 +111,7 @@
                 {
                     @* hiç belge yoksa sakin bir açıklama ve yükleme yolu gösterilir *@
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-4">
+                        <td colspan="5" class="text-center text-muted py-4">
                             Henüz belge yüklemedin. Başlamak için "Belge Yükle" butonuna bas.
                         </td>
                     </tr>
@@ -96,3 +120,38 @@
         </table>
     </div>
 </div>
+
+@* silme onayı: geri alınamayan işlem olduğu için bir kez sorulur; tek pencere, bilgiler tıklanan satırdan gelir *@
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silBaslik" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" asp-controller="Documents" asp-action="Sil">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="silBaslik">Belgeyi sil</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="silBelgeId" />
+                    <p class="mb-1"><strong id="silBelgeAd"></strong> belgesi silinecek.</p>
+                    <p class="text-muted small mb-0">Bu işlem geri alınamaz.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // modal açılırken, tıklanan satırın belge numarası ve adı pencereye yazılır
+        var silModal = document.getElementById("silModal");
+        silModal.addEventListener("show.bs.modal", function (olay) {
+            var dugme = olay.relatedTarget;
+            document.getElementById("silBelgeId").value = dugme.getAttribute("data-belge-id");
+            document.getElementById("silBelgeAd").textContent = dugme.getAttribute("data-belge-ad");
+        });
+    </script>
+}
