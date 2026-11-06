@@ -192,6 +192,16 @@ footer.footer {
   display: none;
 }
 
+/* dosya alanındaki yazı: fareli cihazda "sürükle", dokunmatik cihazda (telefon) "seç" yazısı görünür */
+.yalniz-dokunmatik {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .yalniz-fare { display: none; }
+  .yalniz-dokunmatik { display: inline; }
+}
+
 /* kullanıcı menüsündeki yuvarlak avatar: e-postanın ilk harfi (beyaz yazı koyu yeşil üstünde okunur) */
 .kullanici-avatar {
   display: inline-flex;

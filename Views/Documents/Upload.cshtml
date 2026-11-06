@@ -71,8 +71,9 @@
                         <svg class="yukleme-ikon" aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 16V4" /><path d="M7 9l5-5 5 5" /><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" />
                         </svg>
-                        <p class="fw-semibold mb-1">Dosyayı buraya sürükle</p>
-                        <p class="text-muted small mb-3">ya da bilgisayarından seç</p>
+                        @* fareli cihazda "sürükle", telefonda "seç" yazısı görünür (kural site.css'te) *@
+                        <p class="fw-semibold mb-1"><span class="yalniz-fare">Dosyayı buraya sürükle</span><span class="yalniz-dokunmatik">Belgeni telefonundan seç</span></p>
+                        <p class="text-muted small mb-3 yalniz-fare">ya da bilgisayarından seç</p>
 
                         <label for="dosya" class="btn btn-outline-primary mb-0">Dosya seç</label>
                         @* name="dosya": controller'daki IFormFile dosya parametresiyle aynı olmalı; kutu gizli ama klavyeyle odaklanabilir *@
@@ -186,10 +187,10 @@
             }
         });
 
-        // anında geri bildirim: gönderilirken buton kilitlenir ve "Yükleniyor…" yazar
+        // anında geri bildirim: gönderilirken buton kilitlenir, dönen simge ve "Yükleniyor…" görünür
         form.addEventListener("submit", function () {
             dugme.disabled = true;
-            dugme.textContent = "Yükleniyor…";
+            dugme.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Yükleniyor…';
         });
     </script>
 }
