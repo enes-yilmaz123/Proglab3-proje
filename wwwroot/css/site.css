@@ -18,8 +18,24 @@ html {
   min-height: 100%;
 }
 
+/* alt bilgi sayfanın en altında durur; telefonda yazı alt satıra geçer, içeriğin üstüne binmez */
 body {
-  margin-bottom: 60px;
+  margin-bottom: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body > .container {
+  flex: 1 0 auto;
+}
+
+footer.footer {
+  position: static !important;
+  white-space: normal !important;
+  line-height: 1.5 !important;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -38,9 +54,14 @@ body {
   padding-left: 0;
 }
 
-/* dokunma hedefi: normal butonlar en az 44 piksel yüksekliğinde, dokunmatik ekranda basması kolay olsun */
+/* dokunma hedefi: normal butonlar ve menü düğmesi en az 44 piksel (rem yerine piksel: telefonda yazı boyutu küçük olduğu için rem 44'ten az kalıyordu) */
 .btn:not(.btn-sm) {
-  min-height: 2.75rem;
+  min-height: 44px;
+}
+
+.navbar-toggler {
+  min-width: 44px;
+  min-height: 44px;
 }
 
 /* KOÜ teması: amblemin yeşili (#09A350) beyaz yazıyla yeterli kontrast vermediği için koyulaştırıldı (#067D3B, yaklaşık 5,2:1) */
