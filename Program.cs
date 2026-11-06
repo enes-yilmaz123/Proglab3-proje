@@ -22,6 +22,9 @@ builder.Services.AddDbContext<StajDbContext>(options => options.UseSqlite("Data 
 // AuthController şifre hashlemek için PasswordService ister, kayıtlı değilse sayfa açılmaz
 builder.Services.AddScoped<PasswordService>();
 
+//eğer vir sınıf v erisetiaktarici isterse bir tane oluşturur  verir
+builder.Services.AddScoped<VeriSetiAktarici>();
+
 
 // admin sayfası yada öğrencilerin evrak yükleme sayfası gibi korumalı sayfalara girince buraya yönlendirilir
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
