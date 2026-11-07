@@ -105,7 +105,8 @@
                 <tr>
                     <th scope="col">Öğrenci</th>
                     <th scope="col">Dosya</th>
-                    <th scope="col">Yükleme tarihi</th>
+                    @* telefonda yer açmak için yükleme tarihi sütunu yalnızca geniş ekranda görünür *@
+                    <th scope="col" class="d-none d-md-table-cell">Yükleme tarihi</th>
                     <th scope="col">Durum</th>
                     <th scope="col">Kontrol sonucu</th>
                     <th scope="col">İşlemler</th>
@@ -122,8 +123,8 @@
                                 @satir.OgrenciAdSoyad
                                 <div class="small text-muted">@satir.OgrenciNo</div>
                             </td>
-                            <td class="text-break">@satir.DosyaAdi</td>
-                            <td>@satir.YuklemeTarihi.ToString("g", tr)</td>
+                            <td class="text-break small">@satir.DosyaAdi</td>
+                            <td class="d-none d-md-table-cell">@satir.YuklemeTarihi.ToString("g", tr)</td>
                             <td><span class="badge @Rozet(satir.Durum)">@satir.DurumMetni</span></td>
                             <td>
                                 @if (raporSatirlari.Length == 0)
@@ -145,8 +146,8 @@
                                 }
                             </td>
                             <td>
-                                @* durum değiştirme: seçili durum şu anki durumdur; "Güncelle" ile kaydedilir *@
-                                <form method="post" asp-action="DurumDegistir" class="d-flex gap-1 mb-1">
+                                @* durum değiştirme: seçili durum şu anki durumdur; "Güncelle" ile kaydedilir; dar ekranda alt satıra geçer *@
+                                <form method="post" asp-action="DurumDegistir" class="d-flex flex-wrap gap-1 mb-1">
                                     <input type="hidden" name="id" value="@satir.Id" />
                                     <label for="durum-@satir.Id" class="visually-hidden">@satir.DosyaAdi için yeni durum</label>
                                     <select class="form-select form-select-sm" id="durum-@satir.Id" name="yeniDurum">
@@ -166,9 +167,11 @@
                 }
                 else
                 {
-                    @* boş liste: neden boş olduğunu söyler *@
+                    @* boş liste: belge simgesi ve neden boş olduğu yazar *@
                     <tr>
                         <td colspan="6" class="text-center text-muted py-4">
+                            <svg class="mb-2" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /></svg>
+                            <br />
                             @if (!string.IsNullOrWhiteSpace(Model.Arama))
                             {
                                 <text>"@Model.Arama" için sonuç bulunamadı. Başka bir ad ya da numara dene.</text>
