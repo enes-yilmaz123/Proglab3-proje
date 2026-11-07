@@ -105,3 +105,17 @@
 37. başvurular sayfasına belge silme butonu eklendi, silmeden önce onay penceresi soruyor
 38. veri seti sayfası (Admin/VeriSeti.cshtml) yazıldı, CSV yükleme formu ve beklenen 12 sütunu gösteren dosya biçimi tablosu eklendi, .csv olmayan dosya seçilince uyarı veriliyor
 39. veri seti yüklenince sonuç mesajı yeşil "Başarılı" kutusunda, hata kırmızı "Hata" kutusunda gösteriliyor
+40. kullanıcı menüsü avatarlı açılır menüye çevrildi: e-postanın ilk harfi yuvarlak içinde görünüyor, açılınca e-posta, rol ve Çıkış var
+41. avatara ve menü bağlantılarına üzerine gelince yeşil halka ve çizgi efekti eklendi
+42. ana sayfaya "Neler kontrol edilir?" bölümü eklendi
+43. gizlilik sayfası (Privacy.cshtml) Türkçeleştirildi, alt bilgiye Gizlilik bağlantısı eklendi
+44. kayıt sayfasına gizlilik bilgilendirme cümlesi ve veri setinden gelen öğrenciler için bilgi notu eklendi
+45. Belgelerim sayfasına belge silme eklendi, silmeden önce onay penceresi soruyor
+46. Tamamlandı durumundaki belgede Sil butonu gizlenmiyor, soluk gösteriliyor ve "Tamamlandı, silinemez" yazıyor
+47. silme sonrası sayfada "Başarılı" ya da "Uyarı" kutusu çıkıyor
+48. alt bilgi telefonda içeriğin üstüne binmiyor, yazı alt satıra geçiyor
+49. butonlar ve menü düğmesi telefonda en az 44 piksel yüksekliğinde
+50. yükleme sayfasında telefonda "sürükle" yerine "Belgeni telefonundan seç" yazısı çıkıyor
+51. belge yükle ve veri seti yükle butonlarında dönen simge eklendi
+52. boş liste satırlarına (Belgelerim, Başvurular, Öğrenci Listesi) küçük simge eklendi
+53. başvurular tablosunda telefonda yükleme tarihi sütunu gizleniyor, durum listesi ve Güncelle butonu alt alta diziliyor
