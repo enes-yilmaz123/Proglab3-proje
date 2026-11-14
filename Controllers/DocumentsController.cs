@@ -93,10 +93,13 @@ namespace StajYonetimSistemi.Controllers
                 return RedirectToAction("Index");
             }
 
+            // StoredPath sadece dosya adını tutuyor, o yüzden uploads klasörüyle birleştirip tam yolu buluyoruz
+            string tamYol = Path.Combine(uploadsKlasoru, belge.StoredPath);
+
             // önce diskteki dosyayı sil (dosya yoksa hata vermesin diye önce kontrol ediyoruz)
-            if (System.IO.File.Exists(belge.StoredPath))
+            if (System.IO.File.Exists(tamYol))
             {
-                System.IO.File.Delete(belge.StoredPath);
+                System.IO.File.Delete(tamYol);
             }
 
             // sonra veritabanındaki kaydı sil ve değişikliği kaydet
