@@ -8,7 +8,7 @@
     static (string Isaret, string Sinif) Isaretle(string satir)
     {
         if (satir.EndsWith("geçerli")) { return ("✓", "text-success"); }
-        if (satir.Contains("okunamadi") || satir.Contains("desteklenmiyor")) { return ("ℹ", "text-muted"); }
+        if (satir.Contains("okunamadı") || satir.Contains("desteklenmiyor")) { return ("ℹ", "text-muted"); }
         return ("✗", "text-danger");
     }
 }
@@ -27,7 +27,7 @@
                 @if (TempData["Mesaj"] != null)
                 {
                     var rapor = (TempData["Rapor"] as IEnumerable<string>)?.ToList() ?? new List<string>();
-                    bool hataVar = rapor.Any(r => !r.EndsWith("geçerli") && !r.Contains("okunamadi") && !r.Contains("desteklenmiyor"));
+                    bool hataVar = rapor.Any(r => !r.EndsWith("geçerli") && !r.Contains("okunamadı") && !r.Contains("desteklenmiyor"));
 
                     <div class="alert alert-success" role="status">
                         <strong>Başarılı:</strong> @TempData["Mesaj"].

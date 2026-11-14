@@ -171,7 +171,7 @@ namespace StajYonetimSistemi.Controllers
 
                     if (uyruk == "")
                     {
-                        rapor.Add("Kimlik: uyruk belgeden okunamadi, kontrol yapilamadi"); // uyruğu okuyamadıysak hangi kuralın çalışacağını bilemeyiz
+                        rapor.Add("Kimlik: uyruk belgeden okunamadı, kontrol yapilamadi"); // uyruğu okuyamadıysak hangi kuralın çalışacağını bilemeyiz
                         hataVar = true;
                     }
                     else
@@ -211,7 +211,7 @@ namespace StajYonetimSistemi.Controllers
                     var farklar = karsilastirici.Karsilastir(bilgi, ogrenci);
                     if (farklar.Count == 0)
                     {
-                        rapor.Add("Kayıt karşılaştırması: belgedeki bilgiler kayıtla uyuşuyor"); // hiç fark yoksa bunu yazıyoruz
+                        rapor.Add("Kayıt karşılaştırması: geçerli"); // hiç fark yoksa bunu yazıyoruz
                     }
                     else
                     {
@@ -226,7 +226,7 @@ namespace StajYonetimSistemi.Controllers
                 catch (Exception)
                 {
                     // bozuk ya da beklenmeyen bir docx gelirse site çökmesin
-                    rapor.Add("Belge okunamadi, dosya bozuk olabilir");
+                    rapor.Add("Belge okunamadı, dosya bozuk olabilir");
                 }
             }
             else
