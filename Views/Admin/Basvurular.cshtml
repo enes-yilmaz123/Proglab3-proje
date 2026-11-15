@@ -48,7 +48,7 @@
     static (string Isaret, string Sinif) Isaretle(string satir)
     {
         if (satir.EndsWith("geçerli")) { return ("✓", "text-success"); }
-        if (satir.Contains("okunamadi") || satir.Contains("desteklenmiyor")) { return ("ℹ", "text-muted"); }
+        if (satir.Contains("okunamadı") || satir.Contains("desteklenmiyor")) { return ("ℹ", "text-muted"); }
         return ("✗", "text-danger");
     }
 }
