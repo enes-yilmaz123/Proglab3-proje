@@ -93,10 +93,13 @@ namespace StajYonetimSistemi.Controllers
                 return RedirectToAction("Index");
             }
 
+            // StoredPath sadece dosya adını tutuyor, o yüzden uploads klasörüyle birleştirip tam yolu buluyoruz
+            string tamYol = Path.Combine(uploadsKlasoru, belge.StoredPath);
+
             // önce diskteki dosyayı sil (dosya yoksa hata vermesin diye önce kontrol ediyoruz)
-            if (System.IO.File.Exists(belge.StoredPath))
+            if (System.IO.File.Exists(tamYol))
             {
-                System.IO.File.Delete(belge.StoredPath);
+                System.IO.File.Delete(tamYol);
             }
 
             // sonra veritabanındaki kaydı sil ve değişikliği kaydet
@@ -168,7 +171,7 @@ namespace StajYonetimSistemi.Controllers
 
                     if (uyruk == "")
                     {
-                        rapor.Add("Kimlik: uyruk belgeden okunamadi, kontrol yapilamadi"); // uyruğu okuyamadıysak hangi kuralın çalışacağını bilemeyiz
+                        rapor.Add("Kimlik: uyruk belgeden okunamadı, kontrol yapilamadi"); // uyruğu okuyamadıysak hangi kuralın çalışacağını bilemeyiz
                         hataVar = true;
                     }
                     else
@@ -208,7 +211,7 @@ namespace StajYonetimSistemi.Controllers
                     var farklar = karsilastirici.Karsilastir(bilgi, ogrenci);
                     if (farklar.Count == 0)
                     {
-                        rapor.Add("Kayıt karşılaştırması: belgedeki bilgiler kayıtla uyuşuyor"); // hiç fark yoksa bunu yazıyoruz
+                        rapor.Add("Kayıt karşılaştırması: geçerli"); // hiç fark yoksa bunu yazıyoruz
                     }
                     else
                     {
@@ -223,7 +226,7 @@ namespace StajYonetimSistemi.Controllers
                 catch (Exception)
                 {
                     // bozuk ya da beklenmeyen bir docx gelirse site çökmesin
-                    rapor.Add("Belge okunamadi, dosya bozuk olabilir");
+                    rapor.Add("Belge okunamadı, dosya bozuk olabilir");
                 }
             }
             else
