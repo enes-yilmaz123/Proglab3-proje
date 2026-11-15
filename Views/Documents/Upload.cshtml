@@ -23,16 +23,36 @@
                     <p class="text-muted mb-0">Staj başvuru formunu sisteme yükle.</p>
                 </div>
 
-                @* yükleme sonrası: önce "Başarılı" kutusu, altında kontrol sonucu; her satırda renge ek olarak işaret ve yazı var *@
+                @* yükleme sonrası: önce sonuç kutusu, altında kontrol sonucu; her satırda renge ek olarak işaret ve yazı var *@
                 @if (TempData["Mesaj"] != null)
                 {
                     var rapor = (TempData["Rapor"] as IEnumerable<string>)?.ToList() ?? new List<string>();
                     bool hataVar = rapor.Any(r => !r.EndsWith("geçerli") && !r.Contains("okunamadı") && !r.Contains("desteklenmiyor"));
 
-                    <div class="alert alert-success" role="status">
-                        <strong>Başarılı:</strong> @TempData["Mesaj"].
-                        <a class="alert-link" asp-controller="Documents" asp-action="Index">Belgelerim'e git</a>
-                    </div>
+                    @* kutu kontrol sonucuna göre değişir: hata varsa "Uyarı", otomatik kontrol yapılamadıysa "Bilgi", hepsi geçerliyse "Başarılı"; renge ek olarak yazı da var *@
+                    bool kontrolEdilemedi = rapor.Any(r => r.Contains("okunamadı") || r.Contains("desteklenmiyor"));
+
+                    @if (hataVar)
+                    {
+                        <div class="alert alert-warning" role="status">
+                            <strong>Uyarı:</strong> @TempData["Mesaj"], ama kontrollerde düzeltilecek yerler var. Aşağıdaki sonuca bak.
+                            <a class="alert-link" asp-controller="Documents" asp-action="Index">Belgelerim'e git</a>
+                        </div>
+                    }
+                    else if (kontrolEdilemedi)
+                    {
+                        <div class="alert alert-info" role="status">
+                            <strong>Bilgi:</strong> @TempData["Mesaj"], bu belge otomatik kontrol edilemedi, yönetici elle bakacak.
+                            <a class="alert-link" asp-controller="Documents" asp-action="Index">Belgelerim'e git</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success" role="status">
+                            <strong>Başarılı:</strong> @TempData["Mesaj"] ve bütün kontrolleri geçti.
+                            <a class="alert-link" asp-controller="Documents" asp-action="Index">Belgelerim'e git</a>
+                        </div>
+                    }
 
                     @if (rapor.Any())
                     {
