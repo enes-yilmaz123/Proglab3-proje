@@ -44,7 +44,7 @@
 8. e-posta doğrulayıcı yazıldı, @ işaretinin tek olması, öncesinde karakter bulunması, noktanın @ dan sonra gelmesi, noktanın sonda bulunmaması ve nokta ile @ arasında karakter olması kontrol ediliyor. Kural sınıfından türetildi
 9. sonuç sınıfına uyarı bilgisi eklendi, mühendis sayısı doğrulayıcı yazıldı 
 10. dosya formatı kuralı yazıldı doc docx pdf jpg jpeg ve png uzantıları kabul ediliyor diğerleri reddediliyor 
-11. şu anda başta ve sondaki boşluklar silinmiyor bu işlem en son kuralları çağıran katmanda tek yerde yapılacak
+11. kuralların içinde başta ve sondaki boşluklar silinmiyor, kurallar kendisine verilen değeri olduğu gibi kontrol ediyor, boşlukları temizleme işi okuma katmanında tek yerde yapılıyor (DocxOkuyucu hücre metnini, Ek16Ayiklayici ise / ile böldükten sonra parçaları Trim ediyor)
 12. edestek forumundaki cevaba göre vizede evrak yükleme kontrolleri sadece dosya formatı ve uzantı kontrolünü kapsıyor, bu yüzden adres, öğretim yılı, teslim tarihi ve staj günü gibi diğer doğrulama kurallarına vizeden sonra devam edilecek
 13. yüklenen dosyayı sunucuya kaydeden DosyaKaydedici servisi yazıldı, dosya Guid ile yeni isim alıp uploads klasörüne kaydediliyor, gerçek adı veri tabanında tutuluyor
 14. uploads klasörü gitignore a eklendi
@@ -60,6 +60,14 @@
 24. sayfa yenilenince (F5) belgenin ikinci kez yüklenmesi sorunu düzeltildi, yükleme sonrası RedirectToAction ve TempData kullanıldı
 25. geçersiz belgelerle denendi: tc 0 ile başlayan, hatalı telefon, hatalı e-posta, yabancı kimlik no 99 ile başlamıyor, bozuk docx, hepsinde beklenen mesajlar çıktı
 26. pdf, doc ve resim dosyaları kabul edilip kaydediliyor ama içleri okunmuyor, ekranda bu formatta otomatik okuma desteklenmiyor yazıyor, pdf için PdfPig ile okuma sonraya bırakıldı, resimler için OCR final aşamasında
+27. belgenin durumu ve raporu veri tabanına kaydedilmeye başlandı, Document modeline Rapor alanı eklendi ve migration alındı, okunamayan belge İnceleniyor, kuralı geçemeyen HataliEksik, hepsi geçen Onaylandı oluyor, tek SaveChanges ile kaydediliyor
+28. öğrencinin yüklediği belgeleri durumu ve raporuyla gösteren Belgelerim sayfasının controller kısmı yazıldı (Index), sadece giriş yapan öğrencinin belgeleri en yeni üstte olacak şekilde BelgelerimViewModel ile sayfaya gidiyor, sayfanın tasarımını frontend arkadaş yaptı
+29. BilgiKarsilastirici sınıfı yazıldı, belgeden okunan ad soyad, öğrenci numarası ve e-posta öğrencinin kayıtlı bilgileriyle karşılaştırılıyor, ad soyad kelime kelime ve sırasından bağımsız tr-TR kültürüyle büyük harfe çevrilerek karşılaştırılıyor (ikinci ismi olanlar için), e-posta ve numara OrdinalIgnoreCase ile karşılaştırılıyor çünkü tr-TR ile I ve İ farkı yüzünden ALI ile ali eşleşmiyor
+30. uyuşmayan her alan için ayrı bir satır rapora yazılıyor, fark yoksa Kayıt karşılaştırması geçerli satırı çıkıyor, bu satırın sonu geçerli ile bittiği için sayfada yeşil tik görünüyor
+31. öğrenci belge silme eklendi (Sil), öğrenci sadece kendi belgesini silebiliyor, durumu Tamamlandı olan belgeyi silemiyor (forumdaki cevaba göre sadece admin silebilir), diskteki dosya ve veri tabanı kaydı birlikte siliniyor
+32. Sil metodunda dosya yolu hatası düzeltildi, StoredPath sadece dosya adını tutuyor olduğu için uploads klasörüyle Path.Combine ile birleştirilip tam yol bulundu, hatayı frontend arkadaş buldu
+33. Türkçe karakter hataları düzeltildi, okunamadı kelimesi hem controller hem frontend arkadaşın sayfalarında aynı anda değiştirildi çünkü sayfalardaki ikon seçimi bu yazıya bakıyor
+34. vizede yapılmayanlar ve sınırlılıklar: pdf ve doc okunmuyor, görsellerde OCR yok, staj tarihleri karşılaştırılmıyor, adres ve öğretim yılı gibi diğer kurallar kodda yazılı ama yükleme akışına bağlı değil, karşılaştırma şimdilik öğrencinin kayıt bilgileriyle yapılıyor, admin veri setiyle karşılaştırma ve Tamamlandı kilidinin admin tarafı Enes ile birleştirilecek
 
 
 
