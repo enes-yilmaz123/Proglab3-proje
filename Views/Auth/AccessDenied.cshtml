@@ -1,12 +1,21 @@
+@* sayfanın sekmede görünen başlığı *@
 @{
-    ViewData["Title"] = "Erişim Reddedildi";
+    ViewData["Title"] = "Erişim izni yok";
 }
 
-<div class="text-center mt-5">
-    <h1>403</h1>
-    <p>Bu sayfaya erişim yetkiniz yok.</p>
-    <p>3 saniye içinde ana sayfaya yönlendirileceksiniz...</p>
-    <a asp-controller="Home" asp-action="Index">Hemen git</a>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm kimlik-karti belir">
+            <div class="card-body p-4 text-center">
+                <h1 class="h3 mb-2">403 - Bu sayfaya erişim iznin yok</h1>
+                <p class="text-muted mb-2">Bu sayfayı görmek için farklı bir hesapla giriş yapman gerekebilir.</p>
+                <p class="text-muted small mb-4">3 saniye içinde ana sayfaya yönlendirileceksin...</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Ana sayfaya dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>

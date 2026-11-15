@@ -26,7 +26,7 @@
     </div>
 </section>
 
-@* "nasıl çalışır" adımları öğrenciler içindir; yönetici için gösterilmez, ekran sade kalır *@
+@* "nasıl çalışır" adımları ve kontrol kapsamı öğrenciler içindir; yönetici için gösterilmez, ekran sade kalır *@
 @if (!User.IsInRole("ROLE_ADMIN"))
 {
     <section class="row row-cols-1 row-cols-md-3 g-3 mt-2" aria-label="Nasıl çalışır">
@@ -55,6 +55,33 @@
                     <h2 class="h5 card-title">Sonucu gör</h2>
                     <p class="card-text text-muted">Kontrol sonucunu ve varsa eksikleri incele.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    @* sistemin gerçekte neleri kontrol ettiği: Word belgeleri otomatik okunur, diğer biçimler şimdilik elle incelenir *@
+    <section class="mt-4 belir belir-3" aria-labelledby="kapsamBaslik">
+        <h2 class="h4 mb-3" id="kapsamBaslik">Neler kontrol edilir?</h2>
+        <div class="card">
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-5">
+                        <h3 class="h6 fw-semibold">Her belgede</h3>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-1"><span class="text-success fw-bold me-2" aria-hidden="true">✓</span>Dosya biçimi: Word, PDF, JPEG ya da PNG olmalı</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-7">
+                        <h3 class="h6 fw-semibold">Word (.docx) belgelerinde otomatik</h3>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-1"><span class="text-success fw-bold me-2" aria-hidden="true">✓</span>Kimlik numarası: 11 haneli ve rakam, T.C. için ilk hane 0 değil, yabancı için 99 ile başlıyor</li>
+                            <li class="mb-1"><span class="text-success fw-bold me-2" aria-hidden="true">✓</span>Telefon numarası: +90 xxx xxx xx xx biçiminde</li>
+                            <li class="mb-1"><span class="text-success fw-bold me-2" aria-hidden="true">✓</span>E-posta adresi: geçerli biçimde</li>
+                            <li class="mb-1"><span class="text-success fw-bold me-2" aria-hidden="true">✓</span>Ad soyad, öğrenci numarası ve e-posta: hesabındaki bilgilerle aynı</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="small text-muted mt-3 mb-0">Eski Word (.doc), PDF ve resim belgeleri şimdilik otomatik okunmaz, yönetici tarafından incelenir. Durumu "İnceleniyor" olarak görünür.</p>
             </div>
         </div>
     </section>
