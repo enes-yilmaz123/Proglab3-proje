@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using StajYonetimSistemi.Data;
 using StajYonetimSistemi.Models;
 using StajYonetimSistemi.ViewModels;
+using StajYonetimSistemi.Services;
 
 namespace StajYonetimSistemi.Controllers
 {
@@ -10,10 +11,12 @@ namespace StajYonetimSistemi.Controllers
     public class AdminController : Controller
     {
         private readonly StajDbContext _context; // veri tabanına erişim için
-        public AdminController(StajDbContext context) // program cs deki kuralları controlerı oluturuken atııyor
+        private readonly VeriSetiAktarici _aktarici; // csv veri setini okuyup öğrencileri kaydeden servis
+        public AdminController(StajDbContext context, VeriSetiAktarici aktarici) // program cs deki kuralları controlerı oluturuken atııyor
         {
             _context = context;
-        }
+            _aktarici = aktarici;
+        }        
         public IActionResult Index()
         {
             var ozet = new AdminOzetViewModel // tablodaki sutun sayılarını çeker tek tek öğrencileri çekip saymaz
@@ -67,7 +70,8 @@ namespace StajYonetimSistemi.Controllers
                     OgrenciNo = ogrenci.StudentNumber,
                     DosyaAdi = belge.OriginalFileName,
                     YuklemeTarihi = belge.UploadDate,
-                    Durum = belge.Status
+                    Durum = belge.Status,
+                    Rapor = belge.Rapor
                 });
             }
 
@@ -82,9 +86,60 @@ namespace StajYonetimSistemi.Controllers
         }
 
         // veri seti yükleme sayfası şimdilik sadece arayüz
+        [HttpGet] // iki tane metod olucağı için bunu sadece sayfa girişlerinde vericek 
         public IActionResult VeriSeti()
         {
             return View();
+        }
+
+        [HttpPost] // veri seti formu gönderilince çalışır dosyanın uygun olup oladığına bakar
+        public IActionResult VeriSeti(IFormFile? dosya)
+        {
+            if (dosya == null || dosya.Length == 0) // dosya seçilmemişse ya da boşsa uyar
+            {
+                TempData["Hata"] = "Lütfen bir dosya seçin";
+                return RedirectToAction("VeriSeti");
+            }
+
+            if (Path.GetExtension(dosya.FileName).ToLower() != ".csv") // dosya uzantıları kontrol edilir ve sadece csv kabul edilir
+            {
+                TempData["Hata"] = "Sadece .csv dosyası yüklenebilir";
+                return RedirectToAction("VeriSeti");
+            }
+
+            using var akis = dosya.OpenReadStream(); // dosyanın içeriğini okunabilir hale getirir
+            TempData["Mesaj"] = _aktarici.Aktar(akis); // servis satırları kaydedip sonuç mesajını döndürür
+            return RedirectToAction("VeriSeti"); // dosyanın iki kere kaydedilmesini önlemek için direkt olrak get olarak açar
+        }
+
+        [HttpPost] // durum değiştirme formu gönderilince çalışır
+        public IActionResult DurumDegistir(int id, DocumentStatus yeniDurum) // değişecek olan belggenin id si ve yeni durum girdi olarak girilir
+        {
+            var belge = _context.Documents.FirstOrDefault(d => d.id == id); // belgeyi id ile bul
+            if (belge == null)
+            {
+                return NotFound(); // böyle bir belge yoksa 404 döndür
+            }
+
+            belge.Status = yeniDurum;
+            _context.SaveChanges(); // değişikliği veri tabanına yazar
+
+            return RedirectToAction("Basvurular"); // listeye geri dön
+        }
+
+        [HttpPost] // silme formu gönderilince çalışır
+        public IActionResult Sil(int id)
+        {
+            var belge = _context.Documents.FirstOrDefault(d => d.id == id); // belgeyi id ile bul
+            if (belge == null)
+            {
+                return NotFound(); // böyle bir belge yoksa 404 döndür
+            }
+
+            _context.Documents.Remove(belge); // belgeyi silinecekler arasına işaretler
+            _context.SaveChanges(); // veri tabanından gerçekten siler
+
+            return RedirectToAction("Basvurular"); // listeye geri dön
         }
     }
 }

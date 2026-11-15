@@ -1,0 +1,18 @@
+@* sayfanın sekmede görünen başlığı *@
+@{
+    ViewData["Title"] = "Erişim izni yok";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm kimlik-karti belir">
+            <div class="card-body p-4 text-center">
+                <h1 class="h3 mb-2">Bu sayfaya erişim iznin yok</h1>
+                <p class="text-muted mb-4">Bu sayfayı görmek için farklı bir hesapla giriş yapman gerekebilir.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Ana sayfaya dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

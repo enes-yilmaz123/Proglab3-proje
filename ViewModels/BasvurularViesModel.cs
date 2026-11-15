@@ -11,6 +11,7 @@ namespace StajYonetimSistemi.ViewModels
         public string DosyaAdi { get; set; } = string.Empty;
         public DateTime YuklemeTarihi { get; set; }
         public DocumentStatus Durum { get; set; } // ekranda gösterilen Türkçe durum yazısı
+        public string Rapor { get; set; } = string.Empty;
         
         public string DurumMetni => Durum switch //durum neyse o durum mesajını döndürür
         {

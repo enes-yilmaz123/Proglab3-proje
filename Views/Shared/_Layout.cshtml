@@ -65,22 +65,49 @@
                                    aria-current="@(Burada("Students", "Index") ? "page" : null)"
                                    asp-controller="Students" asp-action="Index">Öğrenciler</a>
                             </li>
-                            @* yönetici belge yükleyemez: seçenek gizlenmez, soluk gösterilir *@
                             <li class="nav-item">
-                                <span class="nav-link disabled" aria-disabled="true" title="Belge yükleme sadece öğrenciler içindir">Belge Yükle</span>
+                                <a class="nav-link text-dark @(Burada("Admin", "VeriSeti") ? "fw-semibold" : "")"
+                                   aria-current="@(Burada("Admin", "VeriSeti") ? "page" : null)"
+                                   asp-controller="Admin" asp-action="VeriSeti">Veri Seti</a>
                             </li>
                         }
                     </ul>
                     <ul class="navbar-nav">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li class="nav-item">
-                                <span class="navbar-text me-3">@User.Identity.Name</span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Auth" asp-action="Logout" method="post">
-                                    <button type="submit" class="btn btn-outline-secondary btn-sm">Çıkış</button>
-                                </form>
+                            var eposta = User.Identity.Name ?? "";
+                            var harf = eposta.Length > 0 ? eposta.Substring(0, 1).ToUpper(new System.Globalization.CultureInfo("tr-TR")) : "?";
+                            var rolYazisi = User.IsInRole("ROLE_ADMIN") ? "Yönetici" : "Öğrenci";
+
+                            @* kullanıcı menüsü: avatarda e-postanın ilk harfi, açılınca e-posta, rol ve kısayollar *@
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="kullaniciMenusu" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false" aria-label="Kullanıcı menüsü, @eposta">
+                                    <span class="kullanici-avatar" aria-hidden="true">@harf</span>
+                                    <span class="d-none d-lg-inline">@rolYazisi</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" style="min-width: 15rem;" aria-labelledby="kullaniciMenusu">
+                                    <li>
+                                        <div class="dropdown-item-text">
+                                            <div class="fw-semibold text-break">@eposta</div>
+                                            <div class="small text-muted">@rolYazisi</div>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    @if (User.IsInRole("ROLE_ADMIN"))
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Yönetim Paneli</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="Documents" asp-action="Index">Belgelerim</a></li>
+                                    }
+                                    <li>
+                                        <form asp-controller="Auth" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item">Çıkış</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
                         }
                         else
@@ -104,8 +131,9 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Kocaeli Üniversitesi &middot; Proglab III, 2026-2027 Güz
+        <div class="container d-flex flex-wrap justify-content-between gap-2">
+            <span>&copy; 2026 - Kocaeli Üniversitesi &middot; Proglab III, 2026-2027 Güz</span>
+            <a asp-controller="Home" asp-action="Privacy">Gizlilik</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
