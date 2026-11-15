@@ -8,8 +8,7 @@
         <div class="card shadow-sm kimlik-karti belir">
             <div class="card-body p-4 text-center">
                 <h1 class="h3 mb-2">403 - Bu sayfaya erişim iznin yok</h1>
-                <p class="text-muted mb-2">Bu sayfayı görmek için farklı bir hesapla giriş yapman gerekebilir.</p>
-                <p class="text-muted small mb-4">3 saniye içinde ana sayfaya yönlendirileceksin...</p>
+                <p class="text-muted mb-4">Bu sayfayı görmek için farklı bir hesapla giriş yapman gerekebilir.</p>
                 <div class="d-flex justify-content-center gap-2">
                     <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Ana sayfaya dön</a>
                 </div>
@@ -17,10 +16,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    // 3 saniye bekleyip ana sayfaya gönderir
-    setTimeout(function () {
-        window.location.href = "/";
-    }, 3000);
-</script>
