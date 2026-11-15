@@ -138,7 +138,7 @@ namespace StajYonetimSistemi.Controllers
             var ogrenci = veritabani.Students.FirstOrDefault(s => s.Email == email); // giriş yapan öğrenciyi e postasından bulur
             if (ogrenci == null)
             {
-                ModelState.AddModelError("", "Ögrenci kaydi bulunamadi,"); // eger bulursa öğrenciyi bulamazsa null döner
+                ModelState.AddModelError("", "Öğrenci kaydı bulunamadı, lütfen çıkış yapıp yeniden giriş yap"); // eger bulursa öğrenciyi bulamazsa null döner
                 return View();
             }
 
@@ -171,7 +171,7 @@ namespace StajYonetimSistemi.Controllers
 
                     if (uyruk == "")
                     {
-                        rapor.Add("Kimlik: uyruk belgeden okunamadı, kontrol yapilamadi"); // uyruğu okuyamadıysak hangi kuralın çalışacağını bilemeyiz
+                        rapor.Add("Kimlik: uyruk belgeden okunamadı, kontrol yapılamadı"); // uyruğu okuyamadıysak hangi kuralın çalışacağını bilemeyiz
                         hataVar = true;
                     }
                     else
@@ -251,7 +251,7 @@ namespace StajYonetimSistemi.Controllers
             veritabani.SaveChanges(); // belgeyi durumuyla birlikte kaydediyoruz
 
             // mesajı ve raporu TempData ile bir sonraki isteğe taşıyoruz 
-            TempData["Mesaj"] = "Belge başariyla yüklendi";
+            TempData["Mesaj"] = "Belge yüklendi";
             TempData["Rapor"] = rapor.ToArray();
 
             // sayfayı yeniden yönlendiriyoruz böylece F5'e basınca belge ikinci kez yüklenmez
@@ -259,5 +259,3 @@ namespace StajYonetimSistemi.Controllers
         }
     }
 }
-
-            

@@ -18,7 +18,7 @@ public class YabanciKimlikDogrulayici : KimlikDogrulayici
         // sadece yabancı kimliğe özel kural
         if (!deger.StartsWith("99")) //bu satır girilen degerin 99 ile başlamasına bakar
         {
-            return new Sonuc(false, "yabanci kimlik no 99 ile baslamali");
+            return new Sonuc(false, "yabancı kimlik no 99 ile başlamalı");
         }
 
         return new Sonuc(true, "Gecerli");

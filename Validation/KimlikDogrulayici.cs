@@ -13,13 +13,13 @@ public abstract class KimlikDogrulayici : Kural
         // uzunluk 11 değilse hata
         if (kimlik.Length != 11) //kimlik.Length girilenin uzunlugunu verir
         {
-            return "11 haneli olmali";
+            return "11 haneli olmalı";
         }
 
         // karakterlerin hepsi rakam değilse hata
         if (!kimlik.All(char.IsDigit)) //bu satır kelimenin hepsinin rakam olup olamadıgını kontrol eder
         {
-            return "sadece rakam olmali";
+            return "sadece rakam olmalı";
         }
 
         return null;

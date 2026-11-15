@@ -15,7 +15,7 @@ public class DosyaFormatDogrulayici : Kural
         if (!KabulEdilenUzantilar.Contains(uzanti))
         // uzantı kabul listesinde yoksa reddedilir
         {
-            return new Sonuc(false, "yalnizca .doc, .docx, .pdf, .jpg, .jpeg ve .png dosyalari yuklenebilir");
+            return new Sonuc(false, "Sadece .doc, .docx, .pdf, .jpg, .jpeg ve .png dosyaları yüklenebilir");
         }
 
         return new Sonuc(true, "Gecerli");
