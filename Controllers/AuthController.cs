@@ -14,6 +14,8 @@ namespace StajYonetimSistemi.Controllers
 {
     public class AuthController : Controller
     {
+        private const int EnFazlaDeneme = 5; // üst üste bu kadar yanlış şifreden sonra hesap kilitlenir
+
         private readonly StajDbContext _context; // bu mesajın nerede aranacağını taşıyan değişken sadece oluşturulurken yazılıyor 
         private readonly PasswordService _passwordService; // bu da karşılaştırılak olan şifrenin taşındığı değişken 
 
@@ -69,14 +71,25 @@ namespace StajYonetimSistemi.Controllers
             if (!sifreDogruMu)
             {
                 user.FailAttempts ++; //deneme başarısız olursa sayacı arttır 5 e ulaşırsa da kilitle 
-                if(user.FailAttempts >= 5)
+                if(user.FailAttempts >= EnFazlaDeneme)
                 {
                     user.IsLocked = true;
                 }
                 _context.LoginLogs.Add(new LoginLog {Email = formInfo.Email , IsSuccess = false}); // log oluşturur
                 _context.SaveChanges();
 
-                ModelState.AddModelError("", "E-posta veya şifre hatalı"); // hata fırlat
+                if (user.IsLocked) // bu son hatalı denemeydi, hesap şimdi kilitlendi
+                {
+                    ModelState.AddModelError("", "E-posta veya şifre hatalı"); // hata fırlat
+                    ModelState.AddModelError("", "Hesabınız 5 hatalı denemeden sonra kilitlendi, yönetici ile iletişime geçin"); // ikinci satır
+                }
+                else
+                {
+                    int kalan = EnFazlaDeneme - user.FailAttempts; // kilitlenmeden önce kaç deneme hakkı kaldı
+                    ModelState.AddModelError("", "E-posta veya şifre hatalı"); // hata fırlat
+                    ModelState.AddModelError("", $"Kalan deneme hakkı: {kalan}"); // ikinci satır, kutuda altta görünür
+                    ModelState.AddModelError("", $"{EnFazlaDeneme} hatalı denemede hesap kilitlenir."); // üçüncü satır
+                }
                 return View(formInfo);// tekar hatalı şifre ve e posta ile tekrar formu gönderiyoruz
             }
 
@@ -188,6 +201,7 @@ namespace StajYonetimSistemi.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(kimlik));
 
             // burada register yapınca direkt olarak giriş yapılmış olunması için cookie oluştuyoruz
+
             return RedirectToAction("Index", "Home");
         }
     }
