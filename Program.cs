@@ -41,16 +41,7 @@ using (var scope = app.Services.CreateScope())// kod ilk çalıştığında herh
     var db = scope.ServiceProvider.GetRequiredService<StajDbContext>();
     db.Database.Migrate(); // eksik tabloları kendisi oluşturur, dotnet ef database update gerekmez
 
-    if (!db.Admins.Any()) // hiç admin yoksa bir tane oluştur
-    {
-        var sifre = app.Configuration["Admin:Sifre"]; // şifre kodda durmaz, ayar dosyasından okunur
-        if (!string.IsNullOrEmpty(sifre))
-        {
-            var sifreci = scope.ServiceProvider.GetRequiredService<PasswordService>();
-            db.Admins.Add(new Admin { Email = "admin@test.com", Password = sifreci.Hash(sifre) });
-            db.SaveChanges();
-        }
-    }
+    // admin hesabı otomatik oluşturulmuyor, güvenlik için veri tabanına elle ekleniyor (şifre kodda ya da ayar dosyasında durmasın diye)
 }// geçici bir kod bloğu olucak büyük ihtimalle 
 
 // Configure the HTTP request pipeline.
