@@ -120,10 +120,10 @@ namespace StajYonetimSistemi.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); // az önce kullandığımız fonksiyonun out versiyonu
             return RedirectToAction("Login"); // tekrardan giriş sayfasına yönlendiriyoruz
         }
-        public IActionResult AccessDenied() // erişim reddeildi  sayfası 
+                public IActionResult AccessDenied() // erişim reddedildi sayfası
         {
-            return StatusCode(403, "Bu sayfaya erişim yetkiniz yok");
-            //front end tasarımında sayfa eklenicek buraya return view() ile 
+            Response.StatusCode = 403; // tarayıcıya ve testlere 403 döndüğünü bildirir
+            return View(); 
         }
 
         [HttpGet] // kayıt ekranını fırlatan fonksiyon 

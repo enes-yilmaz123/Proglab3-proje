@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Erişim Reddedildi";
+}
+
+<div class="text-center mt-5">
+    <h1>403</h1>
+    <p>Bu sayfaya erişim yetkiniz yok.</p>
+    <p>3 saniye içinde ana sayfaya yönlendirileceksiniz...</p>
+    <a asp-controller="Home" asp-action="Index">Hemen git</a>
+</div>
+
+<script>
+    // 3 saniye bekleyip ana sayfaya gönderir
+    setTimeout(function () {
+        window.location.href = "/";
+    }, 3000);
+</script>
